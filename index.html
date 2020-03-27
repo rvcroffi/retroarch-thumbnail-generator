@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+  <link rel="stylesheet" href="./css/photon.min.css">
+  <title>Retroach Thumbnail Updater</title>
+</head>
+
+<body>
+  <div class="window">
+
+    <!-- .toolbar-header sits at the top of your app -->
+    <header class="toolbar toolbar-header">
+      <h1 class="title"></h1>
+      <div class="toolbar-actions">
+        <div class="btn-group">
+          <input type="file" id="ipt-file-playlist" hidden>
+          <button class="btn btn-default" id="btn-load-playlist" title="Load Playlist">
+            <span class="icon icon-doc-text-inv"></span>
+          </button>
+          <button class="btn btn-default">
+            <span class="icon icon-picture"></span>
+          </button>
+          <button class="btn btn-default">
+            <span class="icon icon-play"></span>
+          </button>
+          <button class="btn btn-default">
+            <span class="icon icon-stop"></span>
+          </button>
+          <button class="btn btn-default">
+            <span class="icon icon-install"></span>
+          </button>
+        </div>
+
+        <!-- <button class="btn btn-default js-context-menu">
+          <span class="icon icon-home icon-text"></span>
+          Filters
+        </button> -->
+
+        <!-- <button class="btn btn-default btn-dropdown pull-right">
+          <span class="icon icon-megaphone"></span>
+        </button> -->
+      </div>
+    </header>
+
+    <!-- Your app's content goes inside .window-content -->
+    <div class="window-content">
+      <div class="pane-group">
+        <div class="pane">
+          <table class="table-striped" id="tbl-playlist">
+            <thead>
+              <tr>
+                <th>Games</th>
+                <th>Thumbnail</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--scripts-->
+  <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="renderer.js"></script>
+</body>
+
+</html>

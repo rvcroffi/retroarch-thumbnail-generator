@@ -1,0 +1,24 @@
+{
+  "name": "retroarch-thumbnail-updater",
+  "version": "1.0.0",
+  "description": "Playlist-based thumbnail updater",
+  "main": "main.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development electron ."
+  },
+  "keywords": [
+    "retroarch",
+    "thumbnail",
+    "playlist"
+  ],
+  "author": "Rafael V Croffi <rvcroffi@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "electron": "^8.2.0",
+    "electron-reloader": "^1.0.1"
+  },
+  "dependencies": {
+    "jquery": "^3.4.1"
+  }
+}
