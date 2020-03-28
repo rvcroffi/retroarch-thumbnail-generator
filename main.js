@@ -1,7 +1,9 @@
 const { app, BrowserWindow, Tray, Menu, globalShortcut, dialog } = require('electron');
 const path = require('path');
 const { readFileSync } = require('fs');
+const { copyFile, readFile, readdir } = require('fs').promises;
 const Fuse = require('fuse.js');
+// const zlib = require('zlib');
 
 if (process.env.NODE_ENV == 'development') {
   require('electron-reloader')(module);
@@ -14,6 +16,8 @@ if (process.env.NODE_ENV == 'development') {
 
 global.sharedObject = {
   sendMessage: sendMessage,
+  openDirectory: openDirectory,
+  readDirectory: readDirectory,
   loadPlaylist: loadPlaylist,
   matchFilenames: matchFilenames
 }
@@ -69,20 +73,29 @@ function sendMessage(msg, title, type) {
   dialog.showMessageBox(dialogOpt);
 }
 
+function openDirectory() {
+  return dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory']
+  });
+}
+
+function readDirectory(path) {
+  return readdir(path, {
+    withFileTypes: false
+  });
+}
+
 function loadPlaylist(path) {
-  try {
-    const data = JSON.parse(readFileSync(path, 'utf8'));
-    if (data.items.length) {
-      loadedPlaylist = data.items.slice();
-      return data.items;
-    } else {
-      throw new Error();
-    }
-  } catch (e) {
-    sendMessage('Invalid Playlist File', 'Error', 'error');
-    loadedPlaylist = [];
-    return [];
-  }
+  return readFile(path, 'utf8')
+    .then((result) => {
+      const data = JSON.parse(result);
+      if (data.items.length) {
+        loadedPlaylist = data.items.slice();
+        return data.items;
+      } else {
+        throw new Error();
+      }
+    });
 }
 
 function matchFilenames(filelist, options) {
@@ -98,11 +111,9 @@ function matchFilenames(filelist, options) {
         //result[0] is the item with best match score
         new_item.thumbnail = {
           name: result[0].item.name,
-          path: result[0].item.path,
+          path: path.join(result[0].item.dirpath, result[0].item.name),
           score: result[0].score,
         };
-      } else {
-        new_item.no_thumb = true;
       }
       return new_item;
     });
@@ -110,4 +121,19 @@ function matchFilenames(filelist, options) {
   } else {
     sendMessage('Invalid Playlist File', 'Error', 'error');
   }
+}
+
+function saveImages(playlist, path, callback) {
+  let promises = Promise.resolve();
+  playlist.forEach(element => {
+    if (element.thumbnail) {
+      let ext = element.thumbnail.name.substring(element.thumbnail.name.lastIndexOf('.'));
+      let imagename = element.label.replace(/[&*/:`<>?\|]/g, '_') + ext;
+      promises = promises.then(() => {
+        if (typeof callback === 'function') callback();
+        return copyFile(element.thumbnail.path, path.join(path, imagename));
+      });
+    }
+  });
+  return promises;
 }

@@ -6,6 +6,8 @@ const sharedObject = remote.getGlobal('sharedObject');
 window.appApi = {
   currWindow: remote.BrowserWindow.getFocusedWindow(),
   sendMessage: sharedObject.sendMessage,
+  openDirectory: sharedObject.openDirectory,
+  readDirectory: sharedObject.readDirectory,
   loadPlaylist: sharedObject.loadPlaylist,
   matchFilenames: sharedObject.matchFilenames
 };

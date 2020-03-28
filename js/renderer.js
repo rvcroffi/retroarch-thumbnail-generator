@@ -5,6 +5,8 @@ $(document).ready(() => {
     init: () => {
       model.currWindow = window.appApi.currWindow;
       model.sendMessage = window.appApi.sendMessage;
+      model.openDirectory = window.appApi.openDirectory;
+      model.readDirectory = window.appApi.readDirectory;
       model.loadPlaylist = window.appApi.loadPlaylist;
       model.matchFilenames = window.appApi.matchFilenames;
     }
@@ -13,7 +15,7 @@ $(document).ready(() => {
   let controller = {
     init: () => {
       controller.loadedPlaylist = [];
-      controller.loadedImagelist = [];
+      controller.loadedImagelist = [];// {name: string, dirpath: string}
       model.init();
       view.init();
     },
@@ -27,8 +29,8 @@ $(document).ready(() => {
       return /^image\//.test(type.toLowerCase());
     },
     filterImageList: (list) => {
-      let filteredList = list.filter((file) => {
-        return /^image\//.test(file.type.toLowerCase());
+      let filteredList = list.filter((filename) => {
+        return /\.png$/.test(filename.toLowerCase());
       });
       return filteredList;
     },
@@ -88,18 +90,44 @@ $(document).ready(() => {
     handleLoadedPlaylist: (loadedFile) => {
       if (controller.isPlaylistValid(loadedFile.name)) {
         view.playlistTitle = loadedFile.name.replace('.lpl', '');
-        controller.loadedPlaylist = controller.loadPlaylist(loadedFile.path);
-        view.renderPlaylistTable();
-        view.checkStateButtons();
+        controller.loadPlaylist(loadedFile.path)
+          .then((playlist) => {
+            controller.loadedPlaylist = playlist;
+            view.renderPlaylistTable();
+            view.checkStateButtons();
+          })
+          .catch((error) => {
+            sendMessage('Invalid Playlist File', 'Error', 'error');
+          });
       } else {
         view.showWarningMessage('Invalid playlist file');
       }
     },
-    handleLoadedThumbnails: (filelist) => {
-      if (filelist && filelist.length > 0) {
-        let files = Array.from(filelist);
-        controller.loadedImagelist = controller.filterImageList(files);
-        if (controller.loadedImagelist.length > 0) {
+    openDirectory: () => {
+      return model.openDirectory();
+    },
+    readDirectory: (result) => {
+      if (!result.canceled) {
+        return model.readDirectory(result.filePaths[0])
+          .then((filelist) => {
+            return {
+              filelist: filelist,
+              dirpath: result.filePaths[0]
+            };
+          });
+      }
+      return Promise.resolve(false);
+    },
+    handleLoadedThumbnails: (files, dirpath) => {
+      if (files && files.length > 0) {
+        let imageList = controller.filterImageList(files);
+        if (imageList.length > 0) {
+          controller.loadedImagelist = imageList.map((imagename) => {
+            return {
+              name: imagename,
+              dirpath: dirpath
+            };
+          });
           view.checkStateButtons();
         } else {
           view.showWarningMessage('No image files found');
@@ -122,8 +150,8 @@ $(document).ready(() => {
       view.btn_load_playlist = $('#btn-load-playlist');
       view.ipt_file_playlist = $('#ipt-file-playlist');
       view.btn_dir_thumbnails = $('#btn-dir-thumbnails');
-      view.ipt_dir_thumbnails = $('#ipt-dir-thumbnails');
       view.btn_run = $('#btn-run');
+      view.btn_save = $('#btn-save');
       view.tbl_playlist = $('#tbl-playlist');
       view.actions();
     },
@@ -138,15 +166,26 @@ $(document).ready(() => {
         }
       });
       view.btn_dir_thumbnails.on('click', () => {
-        view.ipt_dir_thumbnails.trigger('click');
-      });
-      view.ipt_dir_thumbnails.on('change', e => {
-        let filelist = e.target.files;
-        controller.handleLoadedThumbnails(filelist);
-        view.ipt_dir_thumbnails.val(null);
+        controller.openDirectory()
+          .then(controller.readDirectory)
+          .then((result) => {
+            if (result.filelist) controller.handleLoadedThumbnails(result.filelist, result.dirpath);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       });
       view.btn_run.on('click', () => {
         controller.matchFilenames();
+      });
+      view.btn_save.on('click', () => {
+        controller.openDirectory()
+          .then((result) => {
+            console.log(result);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       });
     },
     getFuseOptions: () => {
@@ -198,7 +237,6 @@ $(document).ready(() => {
       });
     },
     updateRowTbl: (idx) => {
-      // TODO alterar background-color
       let thumbnail = controller.loadedPlaylist[idx].thumbnail;
       let thumbnameEl = $(`#tbl-row-${idx} .thumbname`);
       let thumbnailEl = $(`#tbl-row-${idx} .thumbnail`);
@@ -217,6 +255,7 @@ $(document).ready(() => {
         thumbnailEl.text('-');
         btnDeleteEl.hide();
       }
+      $(`#tbl-row-${idx}`).css('background-color', '');
     },
     checkStateButtons: () => {
       let config = controller.getStateLists();

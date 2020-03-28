@@ -20,11 +20,10 @@
       <h1 class="title"></h1>
       <div class="toolbar-actions">
         <div class="btn-group">
-          <input type="file" id="ipt-file-playlist" hidden>
+          <input type="file" id="ipt-file-playlist" accept=".lpl" hidden>
           <button class="btn btn-default" id="btn-load-playlist" title="Load Playlist">
             <span class="icon icon-doc-text-inv"></span>
           </button>
-          <input type="file" id="ipt-dir-thumbnails" webkitdirectory hidden>
           <button class="btn btn-default" id="btn-dir-thumbnails" title="Load Image Folder">
             <span class="icon icon-picture"></span>
           </button>
@@ -34,7 +33,7 @@
           <!-- <button class="btn btn-default">
             <span class="icon icon-stop"></span>
           </button> -->
-          <button class="btn btn-default" title="Save Thumbnails">
+          <button class="btn btn-default" id="btn-save" title="Save Thumbnails">
             <span class="icon icon-install"></span>
           </button>
         </div>
@@ -54,7 +53,8 @@
     <div class="window-content">
       <div class="pane-group">
         <div class="pane">
-          <table class="table-striped" id="tbl-playlist">
+          <table class="" id="tbl-playlist">
+            <!--table-striped-->
             <caption>Playlist Title</caption>
             <thead>
               <tr class="text-center">
