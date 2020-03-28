@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Tray, Menu, globalShortcut, dialog } = require('electron');
 const path = require('path');
 const { readFileSync } = require('fs');
+const Fuse = require('fuse.js');
 
 if (process.env.NODE_ENV == 'development') {
   require('electron-reloader')(module);
@@ -13,10 +14,11 @@ if (process.env.NODE_ENV == 'development') {
 
 global.sharedObject = {
   sendMessage: sendMessage,
-  loadPlaylist: loadPlaylist
+  loadPlaylist: loadPlaylist,
+  matchFilenames: matchFilenames
 }
 
-var mainWindow = null;
+var mainWindow = null, loadedPlaylist = [];
 
 function createWindow() {
 
@@ -24,7 +26,7 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(app.getAppPath(), 'preload.js')
+      preload: path.join(app.getAppPath(), 'js', 'preload.js')
     }
   });
 
@@ -59,7 +61,7 @@ app.on('activate', () => {
 
 function sendMessage(msg, title, type) {
   const dialogOpt = {
-    type: type || 'info',//"none", "info", "error", "question", "warning"
+    type: type || 'none',//"none", "info", "error", "question", "warning"
     buttons: ['Ok'],
     title: title || 'Attention',
     message: msg
@@ -71,12 +73,41 @@ function loadPlaylist(path) {
   try {
     const data = JSON.parse(readFileSync(path, 'utf8'));
     if (data.items.length) {
+      loadedPlaylist = data.items.slice();
       return data.items;
     } else {
       throw new Error();
     }
   } catch (e) {
     sendMessage('Invalid Playlist File', 'Error', 'error');
+    loadedPlaylist = [];
     return [];
+  }
+}
+
+function matchFilenames(filelist, options) {
+  if (loadedPlaylist.length > 0) {
+    let fuse = new Fuse(filelist, options);
+    let updatedPlaylist = loadedPlaylist.map((item) => {
+      let new_item = {
+        label: item.label,
+        path: item.path
+      };
+      let result = fuse.search(item.label);
+      if (result.length > 0) {
+        //result[0] is the item with best match score
+        new_item.thumbnail = {
+          name: result[0].item.name,
+          path: result[0].item.path,
+          score: result[0].score,
+        };
+      } else {
+        new_item.no_thumb = true;
+      }
+      return new_item;
+    });
+    return updatedPlaylist;
+  } else {
+    sendMessage('Invalid Playlist File', 'Error', 'error');
   }
 }

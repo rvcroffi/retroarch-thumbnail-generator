@@ -19,6 +19,7 @@
     "electron-reloader": "^1.0.1"
   },
   "dependencies": {
+    "fuse.js": "^5.0.10-beta",
     "jquery": "^3.4.1"
   }
 }

@@ -8,6 +8,7 @@
   <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
   <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
   <link rel="stylesheet" href="./css/photon.min.css">
+  <link rel="stylesheet" href="./css/style.css">
   <title>Retroach Thumbnail Updater</title>
 </head>
 
@@ -23,16 +24,17 @@
           <button class="btn btn-default" id="btn-load-playlist" title="Load Playlist">
             <span class="icon icon-doc-text-inv"></span>
           </button>
-          <button class="btn btn-default">
+          <input type="file" id="ipt-dir-thumbnails" webkitdirectory hidden>
+          <button class="btn btn-default" id="btn-dir-thumbnails" title="Load Image Folder">
             <span class="icon icon-picture"></span>
           </button>
-          <button class="btn btn-default">
+          <button class="btn btn-default" id="btn-run" title="Run Match">
             <span class="icon icon-play"></span>
           </button>
-          <button class="btn btn-default">
+          <!-- <button class="btn btn-default">
             <span class="icon icon-stop"></span>
-          </button>
-          <button class="btn btn-default">
+          </button> -->
+          <button class="btn btn-default" title="Save Thumbnails">
             <span class="icon icon-install"></span>
           </button>
         </div>
@@ -53,10 +55,12 @@
       <div class="pane-group">
         <div class="pane">
           <table class="table-striped" id="tbl-playlist">
+            <caption>Playlist Title</caption>
             <thead>
-              <tr>
+              <tr class="text-center">
                 <th>Games</th>
-                <th>Thumbnail</th>
+                <th>Image Name</th>
+                <th>Preview</th>
                 <th></th>
               </tr>
             </thead>
@@ -71,7 +75,7 @@
 
   <!--scripts-->
   <script src="./node_modules/jquery/dist/jquery.min.js"></script>
-  <script src="renderer.js"></script>
+  <script src="./js/renderer.js"></script>
 </body>
 
 </html>
