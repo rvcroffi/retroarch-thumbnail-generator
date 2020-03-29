@@ -2,7 +2,8 @@ const { app, BrowserWindow, Tray, Menu, globalShortcut, dialog } = require('elec
 const path = require('path');
 const { readFileSync } = require('fs');
 const { copyFile, readFile, readdir } = require('fs').promises;
-const Fuse = require('fuse.js');
+// const Fuse = require('fuse.js');
+const cp = require('child_process');
 // const zlib = require('zlib');
 
 if (process.env.NODE_ENV == 'development') {
@@ -100,28 +101,29 @@ function loadPlaylist(path) {
 }
 
 function matchFilenames(filelist, options) {
-  if (loadedPlaylist.length > 0) {
-    let fuse = new Fuse(filelist, options);
-    let updatedPlaylist = loadedPlaylist.map((item) => {
-      let new_item = {
-        label: item.label,
-        path: item.path
-      };
-      let result = fuse.search(item.label);
-      if (result.length > 0) {
-        //result[0] is the item with best match score
-        new_item.thumbnail = {
-          name: result[0].item.name,
-          path: path.join(result[0].item.dirpath, result[0].item.name),
-          score: result[0].score,
-        };
+  return new Promise((resolve, reject) => {
+    if (loadedPlaylist.length > 0) {
+      try {
+        const fuseprocess = cp.fork(path.join(app.getAppPath(), 'js', 'fuseprocess.js'));
+        fuseprocess.on('message', (resp) => {
+          if (resp.err) {
+            reject(resp.error);
+          } else {
+            resolve(resp.updatedPlaylist);
+          }
+        });
+        fuseprocess.send({
+          filelist: filelist,
+          options: options,
+          loadedPlaylist: loadedPlaylist
+        });
+      } catch (e) {
+        reject(e);
       }
-      return new_item;
-    });
-    return updatedPlaylist;
-  } else {
-    sendMessage('Invalid Playlist File', 'Error', 'error');
-  }
+    } else {
+      reject('Invalid Playlist File', 'Error', 'error');
+    }
+  });
 }
 
 function saveImages(playlist, dirpath, callback) {

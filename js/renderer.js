@@ -73,11 +73,14 @@ $(document).ready(() => {
       };
       let customFuseOptions = view.getFuseOptions();
       let fuseOptions = $.extend(true, fuseDefaultOptions, customFuseOptions);
-      let result = model.matchFilenames(controller.loadedImagelist, fuseOptions);
-      // console.log(controller.loadedImagelist);
-      // console.log(result);
-      controller.loadedPlaylist = result;
-      view.renderPlaylistTable();
+      model.matchFilenames(controller.loadedImagelist, fuseOptions)
+        .then((result) => {
+          controller.loadedPlaylist = result;
+          view.renderPlaylistTable();
+        })
+        .catch((error) => {
+          view.showErrorMessage(error.message || error, 'Error');
+        });
     },
     getStateLists: () => {
       let config = {
@@ -188,7 +191,7 @@ $(document).ready(() => {
       });
       view.btn_save.on('click', () => {
         controller.openDirectory()
-          .then(controller.saveImages(result, () => { console.log('saved') }))
+          .then(result => controller.saveImages(result, () => { console.log('saved') }))
           .then(() => {
             view.windowFooterTitle.text('Finished!');
           })
