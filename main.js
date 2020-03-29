@@ -19,7 +19,8 @@ global.sharedObject = {
   openDirectory: openDirectory,
   readDirectory: readDirectory,
   loadPlaylist: loadPlaylist,
-  matchFilenames: matchFilenames
+  matchFilenames: matchFilenames,
+  saveImages: saveImages
 }
 
 var mainWindow = null, loadedPlaylist = [];
@@ -123,17 +124,21 @@ function matchFilenames(filelist, options) {
   }
 }
 
-function saveImages(playlist, path, callback) {
-  let promises = Promise.resolve();
-  playlist.forEach(element => {
-    if (element.thumbnail) {
-      let ext = element.thumbnail.name.substring(element.thumbnail.name.lastIndexOf('.'));
-      let imagename = element.label.replace(/[&*/:`<>?\|]/g, '_') + ext;
-      promises = promises.then(() => {
-        if (typeof callback === 'function') callback();
-        return copyFile(element.thumbnail.path, path.join(path, imagename));
-      });
-    }
-  });
-  return promises;
+function saveImages(playlist, dirpath, callback) {
+  try {
+    let promises = Promise.resolve();
+    playlist.forEach(element => {
+      if (element.thumbnail) {
+        let ext = element.thumbnail.name.substring(element.thumbnail.name.lastIndexOf('.'));
+        let imagename = element.label.replace(/[&*/:`<>?\|]/g, '_') + ext;
+        promises = promises.then(() => {
+          if (typeof callback === 'function') callback();
+          return copyFile(element.thumbnail.path, path.join(dirpath, imagename));
+        });
+      }
+    });
+    return promises;
+  } catch (e) {
+    return Promise.reject(e);
+  }
 }

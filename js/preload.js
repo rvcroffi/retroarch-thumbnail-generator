@@ -9,7 +9,8 @@ window.appApi = {
   openDirectory: sharedObject.openDirectory,
   readDirectory: sharedObject.readDirectory,
   loadPlaylist: sharedObject.loadPlaylist,
-  matchFilenames: sharedObject.matchFilenames
+  matchFilenames: sharedObject.matchFilenames,
+  saveImages: sharedObject.saveImages
 };
 // window.readConfig = function () {
 //   const data = readFileSync('./config.json')

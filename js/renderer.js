@@ -9,6 +9,7 @@ $(document).ready(() => {
       model.readDirectory = window.appApi.readDirectory;
       model.loadPlaylist = window.appApi.loadPlaylist;
       model.matchFilenames = window.appApi.matchFilenames;
+      model.saveImages = window.appApi.saveImages;
     }
   };
 
@@ -118,23 +119,31 @@ $(document).ready(() => {
       }
       return Promise.resolve(false);
     },
-    handleLoadedThumbnails: (files, dirpath) => {
-      if (files && files.length > 0) {
-        let imageList = controller.filterImageList(files);
-        if (imageList.length > 0) {
-          controller.loadedImagelist = imageList.map((imagename) => {
-            return {
-              name: imagename,
-              dirpath: dirpath
-            };
-          });
-          view.checkStateButtons();
+    handleLoadedThumbnails: (result) => {
+      if (result) {
+        if (result.filelist.length > 0) {
+          let imageList = controller.filterImageList(result.filelist);
+          if (imageList.length > 0) {
+            controller.loadedImagelist = imageList.map((imagename) => {
+              return {
+                name: imagename,
+                dirpath: result.dirpath
+              };
+            });
+            view.checkStateButtons();
+          } else {
+            view.showWarningMessage('No image files found');
+          }
         } else {
-          view.showWarningMessage('No image files found');
+          view.showWarningMessage('No files found');
         }
-      } else {
-        view.showWarningMessage('No files found');
       }
+    },
+    saveImages: (result, callback) => {
+      if (!result.canceled) {
+        return model.saveImages(controller.loadedPlaylist, result.filePaths[0], callback);
+      }
+      return Promise.resolve(false);
     },
     sendMessage: (msg, title, type) => {
       model.sendMessage(msg, title, type);
@@ -147,6 +156,7 @@ $(document).ready(() => {
   let view = {
     init: () => {
       view.playlistTitle = 'Playlist Title';
+      view.windowFooterTitle = $('.window .toolbar-footer .title');
       view.btn_load_playlist = $('#btn-load-playlist');
       view.ipt_file_playlist = $('#ipt-file-playlist');
       view.btn_dir_thumbnails = $('#btn-dir-thumbnails');
@@ -168,9 +178,7 @@ $(document).ready(() => {
       view.btn_dir_thumbnails.on('click', () => {
         controller.openDirectory()
           .then(controller.readDirectory)
-          .then((result) => {
-            if (result.filelist) controller.handleLoadedThumbnails(result.filelist, result.dirpath);
-          })
+          .then(controller.handleLoadedThumbnails)
           .catch((error) => {
             console.error(error);
           });
@@ -180,8 +188,9 @@ $(document).ready(() => {
       });
       view.btn_save.on('click', () => {
         controller.openDirectory()
-          .then((result) => {
-            console.log(result);
+          .then(controller.saveImages(result, () => { console.log('saved') }))
+          .then(() => {
+            view.windowFooterTitle.text('Finished!');
           })
           .catch((error) => {
             console.error(error);
