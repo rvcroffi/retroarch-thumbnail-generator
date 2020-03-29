@@ -106,6 +106,7 @@ function matchFilenames(filelist, options) {
       try {
         const fuseprocess = cp.fork(path.join(app.getAppPath(), 'js', 'fuseprocess.js'));
         fuseprocess.on('message', (resp) => {
+          fuseprocess.kill();
           if (resp.err) {
             reject(resp.error);
           } else {
