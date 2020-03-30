@@ -1,10 +1,9 @@
-const { app, BrowserWindow, Tray, Menu, globalShortcut, dialog } = require('electron');
+const { app, BrowserWindow, Menu, dialog } = require('electron');
 const path = require('path');
-const { readFileSync } = require('fs');
 const { copyFile, readFile, readdir } = require('fs').promises;
-// const Fuse = require('fuse.js');
 const cp = require('child_process');
-// const zlib = require('zlib');
+
+//TODO handle errors
 
 if (process.env.NODE_ENV == 'development') {
   require('electron-reloader')(module);
@@ -16,6 +15,7 @@ if (process.env.NODE_ENV == 'development') {
 }
 
 global.sharedObject = {
+  handleError: handleError,
   sendMessage: sendMessage,
   openDirectory: openDirectory,
   readDirectory: readDirectory,
@@ -25,6 +25,21 @@ global.sharedObject = {
 }
 
 var mainWindow = null, loadedPlaylist = [];
+
+function handleError(error) {
+  let oError = {
+    userMessage: '',
+    error: null
+  };
+  if (error instanceof Error) {
+    oError.userMessage = 'An internal application error has occurred';
+    oError.error = error;
+  } else {
+    oError.userMessage = error;
+  }
+  sendMessage(oError.userMessage, 'Error', 'error');
+  return oError;
+}
 
 function createWindow() {
 
@@ -90,16 +105,21 @@ function readDirectory(path) {
 function loadPlaylist(path) {
   return readFile(path, 'utf8')
     .then((result) => {
-      const data = JSON.parse(result);
-      if (data.items.length) {
-        data.items.forEach(item => {
-          item.thumbnail = null;
-        });
-        loadedPlaylist = data.items;
-        return data.items.slice();
-      } else {
-        throw new Error();
+      try {
+        const data = JSON.parse(result);
+        if (data.items.length) {
+          data.items.forEach(item => {
+            item.thumbnail = null;
+          });
+          loadedPlaylist = data.items;
+          return data.items.slice();
+        } else {
+          throw new Error();
+        }
+      } catch (e) {
+        Promise.reject('Invalid Playlist File');
       }
+
     });
 }
 
@@ -125,7 +145,7 @@ function matchFilenames(filelist, options) {
         reject(e);
       }
     } else {
-      reject('Invalid Playlist File', 'Error', 'error');
+      reject('Invalid Playlist File');
     }
   });
 }

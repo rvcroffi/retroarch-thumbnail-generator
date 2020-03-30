@@ -4,6 +4,7 @@ $(document).ready(() => {
   let model = {
     init: () => {
       model.currWindow = window.appApi.currWindow;
+      model.handleError = window.appApi.handleError;
       model.sendMessage = window.appApi.sendMessage;
       model.openDirectory = window.appApi.openDirectory;
       model.readDirectory = window.appApi.readDirectory;
@@ -19,6 +20,10 @@ $(document).ready(() => {
       controller.loadedImagelist = [];// {name: string, dirpath: string}
       model.init();
       view.init();
+    },
+    handleError: (error) => {
+      let = oError = model.handleError(error);
+      if (oError.error) console.log(oError.error);
     },
     loadPlaylist: (path) => {
       return model.loadPlaylist(path);
@@ -92,7 +97,7 @@ $(document).ready(() => {
         })
         .catch((error) => {
           view.hideLoading();
-          view.showErrorMessage(error.message || error, 'Error');
+          controller.handleError(error);
         });
     },
     getStateLists: () => {
@@ -114,7 +119,7 @@ $(document).ready(() => {
             view.setPlaylistPath(loadedFile.path);
           })
           .catch((error) => {
-            sendMessage('Invalid Playlist File', 'Error', 'error');
+            controller.handleError(error);
           });
       } else {
         view.showWarningMessage('Invalid playlist file');
@@ -164,7 +169,7 @@ $(document).ready(() => {
           })
           .catch((error) => {
             view.hideLoading();
-            console.error(error);
+            controller.handleError(error);
           });
       } else {
         view.showWarningMessage('No images in your playlist');
@@ -175,7 +180,7 @@ $(document).ready(() => {
         .then(controller.readDirectory)
         .then(controller.handleLoadedThumbnails)
         .catch((error) => {
-          console.error(error);
+          controller.handleError(error);
         });
     },
     handleLoadedThumbnails: (result) => {

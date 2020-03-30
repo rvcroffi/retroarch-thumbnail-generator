@@ -4,7 +4,25 @@
   "description": "Playlist-based thumbnail updater",
   "main": "main.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development electron ."
+    "start": "cross-env NODE_ENV=development electron .",
+    "build": "cross-env NODE_ENV=production electron-builder -p always"
+  },
+  "build": {
+    "appId": "com.rvcroffi.retroarch-thumbnail-updater",
+    "productName": "Retroarch Thumbnail Updater",
+    "copyright": "Copyright © 2020 Rafael V Croffi",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "icon": "icon.png",
+      "target": "nsis"
+    },
+    "linux": {
+      "icon": "icon.png",
+      "target": "deb",
+      "category": "utility"
+    }
   },
   "keywords": [
     "retroarch",
@@ -16,6 +34,7 @@
   "devDependencies": {
     "cross-env": "^7.0.2",
     "electron": "^8.2.0",
+    "electron-builder": "^22.4.1",
     "electron-reloader": "^1.0.1"
   },
   "dependencies": {
