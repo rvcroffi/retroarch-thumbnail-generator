@@ -62,7 +62,9 @@ function createWindow() {
     mainWindow = null;
   });
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (process.env.NODE_ENV == 'development') {
+    mainWindow.webContents.openDevTools();
+  }
 }
 
 app.whenReady().then(createWindow);
