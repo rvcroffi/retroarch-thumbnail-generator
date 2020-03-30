@@ -2,6 +2,22 @@
   max-width:50px;
 }
 
+.top-content{
+  position: relative;
+  display: flex;
+  flex: 0.2;
+  overflow-y: auto;
+}
+
 td, th{
   max-width: 250px;
+}
+
+.loading{
+  width: 15px;
+  vertical-align: middle;
+}
+
+.footer-text{
+  vertical-align: text-top;
 }

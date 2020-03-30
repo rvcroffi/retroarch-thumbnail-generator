@@ -92,8 +92,11 @@ function loadPlaylist(path) {
     .then((result) => {
       const data = JSON.parse(result);
       if (data.items.length) {
-        loadedPlaylist = data.items.slice();
-        return data.items;
+        data.items.forEach(item => {
+          item.thumbnail = null;
+        });
+        loadedPlaylist = data.items;
+        return data.items.slice();
       } else {
         throw new Error();
       }

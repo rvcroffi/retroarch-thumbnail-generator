@@ -50,14 +50,24 @@ $(document).ready(() => {
       controller.loadedPlaylist[idx].thumbnail = null;
       view.updateRowTbl(idx);
     },
-    matchFilenames: () => {
+    validateListsForMatch: () => {
       let config = controller.getStateLists();
+      let msgalert = '', isValid = true;
       if (!config.playlist) {
-        view.showWarningMessage('Load playlist file');
-        return;
+        msgalert = 'Load your playlist file. ';
+        isValid = false;
       }
       if (!config.imagelist) {
-        view.showWarningMessage('Load image folder');
+        msgalert += 'Set your image folder.';
+        isValid = false;
+      }
+      if (!isValid) {
+        view.showWarningMessage(msgalert);
+      }
+      return isValid;
+    },
+    matchFilenames: () => {
+      if (!controller.validateListsForMatch()) {
         return;
       }
       let fuseDefaultOptions = {
@@ -73,12 +83,15 @@ $(document).ready(() => {
       };
       let customFuseOptions = view.getFuseOptions();
       let fuseOptions = $.extend(true, fuseDefaultOptions, customFuseOptions);
+      view.showLoading('Analyzing data..');
       model.matchFilenames(controller.loadedImagelist, fuseOptions)
         .then((result) => {
+          view.hideLoading();
           controller.loadedPlaylist = result;
           view.renderPlaylistTable();
         })
         .catch((error) => {
+          view.hideLoading();
           view.showErrorMessage(error.message || error, 'Error');
         });
     },
@@ -93,12 +106,12 @@ $(document).ready(() => {
     },
     handleLoadedPlaylist: (loadedFile) => {
       if (controller.isPlaylistValid(loadedFile.name)) {
-        view.playlistTitle = loadedFile.name.replace('.lpl', '');
+        view.$playlistTitle = loadedFile.name.replace('.lpl', '');
         controller.loadPlaylist(loadedFile.path)
           .then((playlist) => {
             controller.loadedPlaylist = playlist;
             view.renderPlaylistTable();
-            view.checkStateButtons();
+            view.setPlaylistPath(loadedFile.path);
           })
           .catch((error) => {
             sendMessage('Invalid Playlist File', 'Error', 'error');
@@ -122,6 +135,49 @@ $(document).ready(() => {
       }
       return Promise.resolve(false);
     },
+    countImagesOnPlaylist: () => {
+      let totalimages = 0;
+      controller.loadedPlaylist.forEach((item) => {
+        if (item.thumbnail && item.thumbnail.path) totalimages++;
+      });
+      return totalimages;
+    },
+    handleSaveButton: () => {
+      let totalimages = controller.countImagesOnPlaylist();
+      if (totalimages) {
+        controller.openDirectory()
+          .then(result => {
+            if (!result.canceled) {
+              let saved = 0;
+              view.showLoading(`Saving [${saved} / ${totalimages}]`);
+              return controller.saveImages(result.filePaths[0], () => {
+                saved++;
+                view.showLoading(`Saving [${saved} / ${totalimages}]`);
+              });
+            } else {
+              return Promise.resolve(true);
+            }
+          })
+          .then((canceled) => {
+            view.hideLoading();
+            if (!canceled) view.showMessage('Your images have been saved!');
+          })
+          .catch((error) => {
+            view.hideLoading();
+            console.error(error);
+          });
+      } else {
+        view.showWarningMessage('No images in your playlist');
+      }
+    },
+    handleThumbButton: () => {
+      controller.openDirectory()
+        .then(controller.readDirectory)
+        .then(controller.handleLoadedThumbnails)
+        .catch((error) => {
+          console.error(error);
+        });
+    },
     handleLoadedThumbnails: (result) => {
       if (result) {
         if (result.filelist.length > 0) {
@@ -133,7 +189,7 @@ $(document).ready(() => {
                 dirpath: result.dirpath
               };
             });
-            view.checkStateButtons();
+            view.setImageFolderPath(result.dirpath);
           } else {
             view.showWarningMessage('No image files found');
           }
@@ -142,11 +198,8 @@ $(document).ready(() => {
         }
       }
     },
-    saveImages: (result, callback) => {
-      if (!result.canceled) {
-        return model.saveImages(controller.loadedPlaylist, result.filePaths[0], callback);
-      }
-      return Promise.resolve(false);
+    saveImages: (dirpath, callback) => {
+      return model.saveImages(controller.loadedPlaylist, dirpath, callback);
     },
     sendMessage: (msg, title, type) => {
       model.sendMessage(msg, title, type);
@@ -158,46 +211,37 @@ $(document).ready(() => {
 
   let view = {
     init: () => {
-      view.playlistTitle = 'Playlist Title';
-      view.windowFooterTitle = $('.window .toolbar-footer .title');
-      view.btn_load_playlist = $('#btn-load-playlist');
-      view.ipt_file_playlist = $('#ipt-file-playlist');
-      view.btn_dir_thumbnails = $('#btn-dir-thumbnails');
-      view.btn_run = $('#btn-run');
-      view.btn_save = $('#btn-save');
-      view.tbl_playlist = $('#tbl-playlist');
+      view.$playlistTitle = 'Playlist Title';
+      view.$loading = $('.loading');
+      view.$footer_text = $('.footer-text');
+      view.$playlist_path = $('.playlist-path');
+      view.$imagefolder_path = $('.imagefolder-path');
+      view.$btn_load_playlist = $('#btn-load-playlist');
+      view.$ipt_file_playlist = $('#ipt-file-playlist');
+      view.$btn_dir_thumbnails = $('#btn-dir-thumbnails');
+      view.$btn_run = $('#btn-run');
+      view.$btn_save = $('#btn-save');
+      view.$tbl_playlist = $('#tbl-playlist');
       view.actions();
     },
     actions: () => {
-      view.btn_load_playlist.on('click', () => {
-        view.ipt_file_playlist.trigger('click');
+      view.$btn_load_playlist.on('click', () => {
+        view.$ipt_file_playlist.trigger('click');
       });
-      view.ipt_file_playlist.on('change', e => {
+      view.$ipt_file_playlist.on('change', e => {
         let file = e.target.files[0];
         if (file) {
           controller.handleLoadedPlaylist(file);
         }
       });
-      view.btn_dir_thumbnails.on('click', () => {
-        controller.openDirectory()
-          .then(controller.readDirectory)
-          .then(controller.handleLoadedThumbnails)
-          .catch((error) => {
-            console.error(error);
-          });
+      view.$btn_dir_thumbnails.on('click', () => {
+        controller.handleThumbButton();
       });
-      view.btn_run.on('click', () => {
+      view.$btn_run.on('click', () => {
         controller.matchFilenames();
       });
-      view.btn_save.on('click', () => {
-        controller.openDirectory()
-          .then(result => controller.saveImages(result, () => { console.log('saved') }))
-          .then(() => {
-            view.windowFooterTitle.text('Finished!');
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+      view.$btn_save.on('click', () => {
+        controller.handleSaveButton();
       });
     },
     getFuseOptions: () => {
@@ -230,9 +274,8 @@ $(document).ready(() => {
           <td class="text-center">${btngroup}</td>
         </tr>`;
       });
-      view.tbl_playlist.find('tbody').html(rows);
+      view.$tbl_playlist.find('tbody').html(rows);
       view.tableActions();
-      view.tbl_playlist.find('caption').text(view.playlistTitle);
     },
     tableActions: () => {
       $('.btn-edit').on('click', (e) => {
@@ -269,31 +312,42 @@ $(document).ready(() => {
       }
       $(`#tbl-row-${idx}`).css('background-color', '');
     },
-    checkStateButtons: () => {
-      let config = controller.getStateLists();
-      if (config.playlist) {
-        view.btn_load_playlist.removeClass('btn-default');
-        view.btn_load_playlist.addClass('btn-positive');
-      } else {
-        view.btn_load_playlist.removeClass('btn-positive');
-        view.btn_load_playlist.addClass('btn-default');
-      }
-      if (config.imagelist) {
-        view.btn_dir_thumbnails.removeClass('btn-default');
-        view.btn_dir_thumbnails.addClass('btn-positive');
-      } else {
-        view.btn_dir_thumbnails.removeClass('btn-positive');
-        view.btn_dir_thumbnails.addClass('btn-default');
-      }
+    setImageFolderPath: (path) => {
+      view.$imagefolder_path.text(path);
+    },
+    setPlaylistPath: (path) => {
+      view.$playlist_path.text(path);
     },
     showMessage: (msg, title) => {
-      controller.sendMessage(msg, title);
+      controller.sendMessage(msg, title, 'info');
     },
     showErrorMessage: (msg, title) => {
       controller.sendMessage(msg, title, 'error');
     },
     showWarningMessage: (msg, title) => {
       controller.sendMessage(msg, title, 'warning');
+    },
+    showLoading: (msg) => {
+      view.$loading.show();
+      view.$footer_text.text(msg);
+      view.disableInterface();
+    },
+    hideLoading: () => {
+      view.$loading.hide();
+      view.$footer_text.text('');
+      view.enableInterface();
+    },
+    showFooterMsg: (msg) => {
+      view.$footer_text.text(msg);
+      setTimeout(() => {
+        view.$footer_text.fadeOut(1000);
+      }, 2000);
+    },
+    disableInterface: () => {
+      $('button').prop('disabled', true);
+    },
+    enableInterface: () => {
+      $('button').prop('disabled', false);
     }
   };
 
