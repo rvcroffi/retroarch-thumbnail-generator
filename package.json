@@ -16,12 +16,13 @@
     },
     "win": {
       "icon": "icon.png",
-      "target": "nsis"
-    },
-    "linux": {
-      "icon": "icon.png",
-      "target": "deb",
-      "category": "utility"
+      "target": {
+        "target": "portable",
+        "arch": [
+          "x64",
+          "ia32"
+        ]
+      }
     }
   },
   "keywords": [

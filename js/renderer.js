@@ -173,6 +173,7 @@ $(document).ready(() => {
           .then((canceled) => {
             view.hideLoading();
             if (!canceled) view.showMessage('Your thumbnails have been saved!');
+            //TODO clean sources? reload playlist?
           })
           .catch((error) => {
             view.hideLoading();
@@ -264,6 +265,7 @@ $(document).ready(() => {
         controller.showInfoMenu();
       });
       view.$btn_quit.on('click', () => {
+        // TODO confirm popup
         controller.closeApp();
       });
     },
