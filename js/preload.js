@@ -1,5 +1,4 @@
 const { remote } = require('electron');
-// const { readFileSync } = require('fs');
 
 const sharedObject = remote.getGlobal('sharedObject');
 
@@ -11,9 +10,25 @@ window.appApi = {
   readDirectory: sharedObject.readDirectory,
   loadPlaylist: sharedObject.loadPlaylist,
   matchFilenames: sharedObject.matchFilenames,
-  saveImages: sharedObject.saveImages
+  saveImages: sharedObject.saveImages,
+  quitApp: sharedObject.quitApp,
+  showInfoMenu: showInfoMenu
 };
-// window.readConfig = function () {
-//   const data = readFileSync('./config.json')
-//   return data
-// }
+
+const infoMenu = remote.Menu.buildFromTemplate([
+  {
+    label: 'Check updates',
+    click: () => {
+      sharedObject.checkUpdates();
+    }
+  },
+  {
+    label: 'About',
+    click: () => {
+      remote.shell.openExternal('https://github.com');
+    }
+  }
+]);
+function showInfoMenu() {
+  infoMenu.popup();
+}

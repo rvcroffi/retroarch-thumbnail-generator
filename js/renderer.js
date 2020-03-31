@@ -10,14 +10,16 @@ $(document).ready(() => {
       model.readDirectory = window.appApi.readDirectory;
       model.loadPlaylist = window.appApi.loadPlaylist;
       model.matchFilenames = window.appApi.matchFilenames;
-      model.saveImages = window.appApi.saveImages;
+      model.saveThumbs = window.appApi.saveImages;
+      model.showInfoMenu = window.appApi.showInfoMenu;
+      model.quitApp = window.appApi.quitApp;
     }
   };
 
   let controller = {
     init: () => {
       controller.loadedPlaylist = [];
-      controller.loadedImagelist = [];// {name: string, dirpath: string}
+      controller.loadedThumblist = [];// {name: string, dirpath: string}
       model.init();
       view.init();
     },
@@ -25,23 +27,26 @@ $(document).ready(() => {
       let = oError = model.handleError(error);
       if (oError.error) console.log(oError.error);
     },
+    showInfoMenu: () => {
+      model.showInfoMenu();
+    },
     loadPlaylist: (path) => {
       return model.loadPlaylist(path);
     },
     isPlaylistValid: (name) => {
       return /.*\.lpl$/.test(name.toLowerCase());
     },
-    isImageValid: (type) => {
-      return /^image\//.test(type.toLowerCase());
+    isThumbValid: (type) => {
+      return /^image\/png/.test(type.toLowerCase());
     },
-    filterImageList: (list) => {
+    filterThumbList: (list) => {
       let filteredList = list.filter((filename) => {
         return /\.png$/.test(filename.toLowerCase());
       });
       return filteredList;
     },
-    updateImageOnList: (file, idx) => {
-      if (controller.isImageValid(file.type)) {
+    updateThumbOnList: (file, idx) => {
+      if (controller.isThumbValid(file.type)) {
         controller.loadedPlaylist[idx].thumbnail = {
           name: file.name,
           path: file.path
@@ -51,7 +56,7 @@ $(document).ready(() => {
         view.showWarningMessage('Invalid image file');
       }
     },
-    clearImageOnList: (idx) => {
+    clearThumbOnList: (idx) => {
       controller.loadedPlaylist[idx].thumbnail = null;
       view.updateRowTbl(idx);
     },
@@ -62,8 +67,8 @@ $(document).ready(() => {
         msgalert = 'Load your playlist file. ';
         isValid = false;
       }
-      if (!config.imagelist) {
-        msgalert += 'Set your image folder.';
+      if (!config.thumblist) {
+        msgalert += 'Set your thumbnail source.';
         isValid = false;
       }
       if (!isValid) {
@@ -88,8 +93,8 @@ $(document).ready(() => {
       };
       let customFuseOptions = view.getFuseOptions();
       let fuseOptions = $.extend(true, fuseDefaultOptions, customFuseOptions);
-      view.showLoading('Analyzing data..');
-      model.matchFilenames(controller.loadedImagelist, fuseOptions)
+      view.showLoading('Matching names..');
+      model.matchFilenames(controller.loadedThumblist, fuseOptions)
         .then((result) => {
           view.hideLoading();
           controller.loadedPlaylist = result;
@@ -103,10 +108,10 @@ $(document).ready(() => {
     getStateLists: () => {
       let config = {
         playlist: false,
-        imagelist: false
+        thumblist: false
       };
       if (controller.loadedPlaylist.length) config.playlist = true;
-      if (controller.loadedImagelist.length) config.imagelist = true;
+      if (controller.loadedThumblist.length) config.thumblist = true;
       return config;
     },
     handleLoadedPlaylist: (loadedFile) => {
@@ -115,8 +120,10 @@ $(document).ready(() => {
         controller.loadPlaylist(loadedFile.path)
           .then((playlist) => {
             controller.loadedPlaylist = playlist;
+            view.setQuantGames(playlist.length);
             view.renderPlaylistTable();
             view.setPlaylistPath(loadedFile.path);
+            view.scrollTblTop();
           })
           .catch((error) => {
             controller.handleError(error);
@@ -140,24 +147,24 @@ $(document).ready(() => {
       }
       return Promise.resolve(false);
     },
-    countImagesOnPlaylist: () => {
-      let totalimages = 0;
+    countThumbsOnPlaylist: () => {
+      let totalthumbs = 0;
       controller.loadedPlaylist.forEach((item) => {
-        if (item.thumbnail && item.thumbnail.path) totalimages++;
+        if (item.thumbnail && item.thumbnail.path) totalthumbs++;
       });
-      return totalimages;
+      return totalthumbs;
     },
     handleSaveButton: () => {
-      let totalimages = controller.countImagesOnPlaylist();
-      if (totalimages) {
+      let totalthumbs = controller.countThumbsOnPlaylist();
+      if (totalthumbs) {
         controller.openDirectory()
           .then(result => {
             if (!result.canceled) {
               let saved = 0;
-              view.showLoading(`Saving [${saved} / ${totalimages}]`);
-              return controller.saveImages(result.filePaths[0], () => {
+              view.showLoading(`Saving [${saved} / ${totalthumbs}]`);
+              return controller.saveThumbs(result.filePaths[0], () => {
                 saved++;
-                view.showLoading(`Saving [${saved} / ${totalimages}]`);
+                view.showLoading(`Saving [${saved} / ${totalthumbs}]`);
               });
             } else {
               return Promise.resolve(true);
@@ -165,14 +172,14 @@ $(document).ready(() => {
           })
           .then((canceled) => {
             view.hideLoading();
-            if (!canceled) view.showMessage('Your images have been saved!');
+            if (!canceled) view.showMessage('Your thumbnails have been saved!');
           })
           .catch((error) => {
             view.hideLoading();
             controller.handleError(error);
           });
       } else {
-        view.showWarningMessage('No images in your playlist');
+        view.showWarningMessage('No thumbnails in your playlist');
       }
     },
     handleThumbButton: () => {
@@ -186,31 +193,32 @@ $(document).ready(() => {
     handleLoadedThumbnails: (result) => {
       if (result) {
         if (result.filelist.length > 0) {
-          let imageList = controller.filterImageList(result.filelist);
-          if (imageList.length > 0) {
-            controller.loadedImagelist = imageList.map((imagename) => {
+          let thumbList = controller.filterThumbList(result.filelist);
+          if (thumbList.length > 0) {
+            controller.loadedThumblist = thumbList.map((thumbname) => {
               return {
-                name: imagename,
+                name: thumbname,
                 dirpath: result.dirpath
               };
             });
-            view.setImageFolderPath(result.dirpath);
+            view.setThumbSourcePath(result.dirpath);
+            view.scrollTblTop();
           } else {
-            view.showWarningMessage('No image files found');
+            view.showWarningMessage('No image(PNG) files found');
           }
         } else {
-          view.showWarningMessage('No files found');
+          view.showWarningMessage('No image(PNG) files found');
         }
       }
     },
-    saveImages: (dirpath, callback) => {
-      return model.saveImages(controller.loadedPlaylist, dirpath, callback);
+    saveThumbs: (dirpath, callback) => {
+      return model.saveThumbs(controller.loadedPlaylist, dirpath, callback);
     },
     sendMessage: (msg, title, type) => {
       model.sendMessage(msg, title, type);
     },
     closeApp: () => {
-      model.currWindow.close();
+      model.quitApp();
     }
   };
 
@@ -218,14 +226,18 @@ $(document).ready(() => {
     init: () => {
       view.$playlistTitle = 'Playlist Title';
       view.$loading = $('.loading');
+      view.$pane = $('.pane');
+      view.$quant_games = $('.quant-games');
       view.$footer_text = $('.footer-text');
       view.$playlist_path = $('.playlist-path');
-      view.$imagefolder_path = $('.imagefolder-path');
+      view.$thumbsource_path = $('.thumbsource-path');
       view.$btn_load_playlist = $('#btn-load-playlist');
       view.$ipt_file_playlist = $('#ipt-file-playlist');
       view.$btn_dir_thumbnails = $('#btn-dir-thumbnails');
       view.$btn_run = $('#btn-run');
       view.$btn_save = $('#btn-save');
+      view.$btn_quit = $('#btn-quit');
+      view.$btn_info = $('#btn-info');
       view.$tbl_playlist = $('#tbl-playlist');
       view.actions();
     },
@@ -247,6 +259,12 @@ $(document).ready(() => {
       });
       view.$btn_save.on('click', () => {
         controller.handleSaveButton();
+      });
+      view.$btn_info.on('click', () => {
+        controller.showInfoMenu();
+      });
+      view.$btn_quit.on('click', () => {
+        controller.closeApp();
       });
     },
     getFuseOptions: () => {
@@ -289,11 +307,11 @@ $(document).ready(() => {
       $('.ipt-edit').on('change', (e) => {
         let idx = $(e.currentTarget).data('idx');
         let file = e.currentTarget.files[0];
-        controller.updateImageOnList(file, idx);
+        controller.updateThumbOnList(file, idx);
       });
       $('.btn-delete').on('click', (e) => {
         let idx = $(e.currentTarget).data('idx');
-        controller.clearImageOnList(idx);
+        controller.clearThumbOnList(idx);
       });
     },
     updateRowTbl: (idx) => {
@@ -310,18 +328,25 @@ $(document).ready(() => {
           thumbnailEl.html(`<img src="${thumbnail.path}" class="thumbimg"/>`);
         }
         btnDeleteEl.show();
+        $(`#tbl-row-${idx}`).css('background-color', '');
       } else {
         thumbnameEl.text('-');
         thumbnailEl.text('-');
         btnDeleteEl.hide();
+        $(`#tbl-row-${idx}`).css('background-color', 'lightgray');
       }
-      $(`#tbl-row-${idx}`).css('background-color', '');
     },
-    setImageFolderPath: (path) => {
-      view.$imagefolder_path.text(path);
+    setThumbSourcePath: (path) => {
+      view.$thumbsource_path.text(path);
+    },
+    scrollTblTop: () => {
+      view.$pane.scrollTop(0);
     },
     setPlaylistPath: (path) => {
       view.$playlist_path.text(path);
+    },
+    setQuantGames: (value) => {
+      view.$quant_games.text(`(${value})`);
     },
     showMessage: (msg, title) => {
       controller.sendMessage(msg, title, 'info');

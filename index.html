@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
   <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-  <link rel="stylesheet" href="./css/photon.min.css">
+  <link rel="stylesheet" href="./css/photon.css">
   <link rel="stylesheet" href="./css/style.css">
   <title>Retroach Thumbnail Updater</title>
 </head>
@@ -24,7 +24,7 @@
           <button class="btn btn-default" id="btn-load-playlist" title="Load Playlist">
             <span class="icon icon-doc-text-inv"></span>
           </button>
-          <button class="btn btn-default" id="btn-dir-thumbnails" title="Set Image Folder">
+          <button class="btn btn-default" id="btn-dir-thumbnails" title="Set Thumbnail Source">
             <span class="icon icon-picture"></span>
           </button>
           <button class="btn btn-default" id="btn-run" title="Run Match">
@@ -33,26 +33,25 @@
           <!-- <button class="btn btn-default">
             <span class="icon icon-stop"></span>
           </button> -->
-          <button class="btn btn-default" id="btn-save" title="Save Thumbnails">
+          <button class="btn btn-default" id="btn-save" title="Save Renamed Thumbnails">
             <span class="icon icon-install"></span>
           </button>
         </div>
 
-        <!-- <button class="btn btn-default js-context-menu">
-          <span class="icon icon-home icon-text"></span>
-          Filters
-        </button> -->
+        <button class="btn btn-default" id="btn-quit" title="Quit App">
+          <span class="icon icon-logout"></span>
+        </button>
 
-        <!-- <button class="btn btn-default btn-dropdown pull-right" id="teste">
-          <span class="icon icon-megaphone"></span>
-        </button> -->
+        <button class="btn btn-default btn-dropdown pull-right" id="btn-info">
+          <span class="icon icon-info"></span>
+        </button>
       </div>
     </header>
 
     <div class="top-content">
       <div class="padded-more">
-        <div><span class="icon icon-doc-text-inv"></span> Playlist: <span class="playlist-path"></span></div>
-        <div><span class="icon icon-picture"></span> Image folder: <span class="imagefolder-path"></span></div>
+        <div><span class="icon icon-doc-text-inv"></span> Playlist source: <span class="playlist-path"></span></div>
+        <div><span class="icon icon-picture"></span> Thumbnails source: <span class="thumbsource-path"></span></div>
       </div>
     </div>
     <!-- Your app's content goes inside .window-content -->
@@ -63,7 +62,7 @@
             <!--table-striped-->
             <thead>
               <tr class="text-center">
-                <th>Games</th>
+                <th>Games <span class="quant-games"></span></th>
                 <th>Image Name</th>
                 <th>Preview</th>
                 <th></th>

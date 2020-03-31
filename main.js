@@ -2,8 +2,7 @@ const { app, BrowserWindow, Menu, dialog } = require('electron');
 const path = require('path');
 const { copyFile, readFile, readdir } = require('fs').promises;
 const cp = require('child_process');
-
-//TODO handle errors
+// const { autoUpdater } = require('electron-updater');
 
 if (process.env.NODE_ENV == 'development') {
   require('electron-reloader')(module);
@@ -21,7 +20,9 @@ global.sharedObject = {
   readDirectory: readDirectory,
   loadPlaylist: loadPlaylist,
   matchFilenames: matchFilenames,
-  saveImages: saveImages
+  saveImages: saveImages,
+  quitApp: quitApp,
+  checkUpdates: checkUpdates
 }
 
 var mainWindow = null, loadedPlaylist = [];
@@ -65,9 +66,33 @@ function createWindow() {
   if (process.env.NODE_ENV == 'development') {
     mainWindow.webContents.openDevTools();
   }
+
+  //console.log(`This platform is ${process.platform}`);
 }
 
 app.whenReady().then(createWindow);
+
+// TODO Update config
+// autoUpdater.autoDownload = false;
+// autoUpdater.autoInstallOnAppQuit = false;
+// autoUpdater.on('update-available', () => {
+//   sendMessage('There is an update available', 'Warning', 'info');
+// });
+// autoUpdater.on('update-downloaded', () => {
+//   sendMessage('Update downloaded', 'Warning', 'info');
+// });
+// function downloadUpdate() {
+//   autoUpdater.downloadUpdate()
+//     .catch((e) => {
+//       handleError(e);
+//     })
+// }
+// function quitAndInstall(){
+//   autoUpdater.quitAndInstall(true, true);
+// }
+function checkUpdates() {
+  //autoUpdater.checkForUpdates();
+}
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -81,6 +106,11 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+function quitApp() {
+  app.isQuiting = true;
+  app.quit();
+}
 
 function sendMessage(msg, title, type) {
   const dialogOpt = {
@@ -107,21 +137,21 @@ function readDirectory(path) {
 function loadPlaylist(path) {
   return readFile(path, 'utf8')
     .then((result) => {
+      let data;
       try {
-        const data = JSON.parse(result);
-        if (data.items.length) {
-          data.items.forEach(item => {
-            item.thumbnail = null;
-          });
-          loadedPlaylist = data.items;
-          return data.items.slice();
-        } else {
-          throw new Error();
-        }
+        data = JSON.parse(result);
       } catch (e) {
-        Promise.reject('Invalid Playlist File');
+        Promise.reject('Invalid playlist format');
       }
-
+      if (data.items.length) {
+        data.items.forEach(item => {
+          item.thumbnail = null;
+        });
+        loadedPlaylist = data.items;
+        return data.items.slice();
+      } else {
+        Promise.reject('No items in your playlist');
+      }
     });
 }
 
