@@ -48,7 +48,7 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(app.getAppPath(), 'js', 'preload.js')
+      preload: path.join(app.getAppPath(), 'assets', 'js', 'preload.js')
     }
   });
 
@@ -111,7 +111,7 @@ function quitApp() {
   app.isQuiting = true;
   app.quit();
 }
-
+//TODO criar dialog Yes/No
 function sendMessage(msg, title, type) {
   const dialogOpt = {
     type: type || 'none',//"none", "info", "error", "question", "warning"
@@ -159,7 +159,7 @@ function matchFilenames(filelist, options) {
   return new Promise((resolve, reject) => {
     if (loadedPlaylist.length > 0) {
       try {
-        const fuseprocess = cp.fork(path.join(app.getAppPath(), 'js', 'fuseprocess.js'));
+        const fuseprocess = cp.fork(path.join(app.getAppPath(), 'assets', 'js', 'fuseprocess.js'));
         fuseprocess.on('message', (resp) => {
           fuseprocess.kill();
           if (resp.err) {

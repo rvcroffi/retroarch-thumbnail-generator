@@ -14,7 +14,7 @@ window.appApi = {
   quitApp: sharedObject.quitApp,
   showInfoMenu: showInfoMenu
 };
-
+//TODO criar modulo com menus e importar aqui
 const infoMenu = remote.Menu.buildFromTemplate([
   {
     label: 'Check updates',

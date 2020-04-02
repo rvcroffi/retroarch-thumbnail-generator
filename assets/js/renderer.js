@@ -114,7 +114,7 @@ $(document).ready(() => {
       if (controller.loadedThumblist.length) config.thumblist = true;
       return config;
     },
-    handleLoadedPlaylist: (loadedFile) => {
+    handleLoadPlaylist: (loadedFile) => {
       if (controller.isPlaylistValid(loadedFile.name)) {
         view.$playlistTitle = loadedFile.name.replace('.lpl', '');
         controller.loadPlaylist(loadedFile.path)
@@ -124,6 +124,7 @@ $(document).ready(() => {
             view.renderPlaylistTable();
             view.setPlaylistPath(loadedFile.path);
             view.scrollTblTop();
+            //TODO clear thumbnails path
           })
           .catch((error) => {
             controller.handleError(error);
@@ -222,7 +223,7 @@ $(document).ready(() => {
       model.quitApp();
     }
   };
-
+  //TODO criar painel configurações do match
   let view = {
     init: () => {
       view.$playlistTitle = 'Playlist Title';
@@ -249,7 +250,7 @@ $(document).ready(() => {
       view.$ipt_file_playlist.on('change', e => {
         let file = e.target.files[0];
         if (file) {
-          controller.handleLoadedPlaylist(file);
+          controller.handleLoadPlaylist(file);
         }
       });
       view.$btn_dir_thumbnails.on('click', () => {
