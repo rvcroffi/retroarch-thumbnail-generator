@@ -30,11 +30,11 @@
           <button class="btn btn-default" id="btn-run" title="Run Match">
             <span class="icon icon-play"></span>
           </button>
-          <!-- <button class="btn btn-default">
-            <span class="icon icon-stop"></span>
-          </button> -->
-          <button class="btn btn-default" id="btn-save" title="Save Renamed Thumbnails">
+          <button class="btn btn-default" id="btn-save" title="Save Thumbnails">
             <span class="icon icon-install"></span>
+          </button>
+          <button class="btn btn-default" id="btn-reload" title="Reset playlist">
+            <span class="icon icon-arrows-ccw"></span>
           </button>
         </div>
 
@@ -49,10 +49,21 @@
     </header>
 
     <div class="top-content">
-      <div class="padded-more">
-        <div><span class="icon icon-doc-text-inv"></span> Playlist source: <span class="playlist-path"></span></div>
-        <div><span class="icon icon-picture"></span> Thumbnails source: <span class="thumbsource-path"></span></div>
+      <div class="pane-group">
+        <div class="pane-sm">
+          <div class="padded">
+            <label>Threshold: <span id="val-threshold"></span></label>
+            <input type="range" class="form-control" id="ipt-threshold" min="0" max="10">
+          </div>
+        </div>
+        <div class="pane">
+          <div class="padded">
+            <div><span class="icon icon-doc-text-inv"></span> Playlist source: <span class="playlist-path"></span></div>
+            <div><span class="icon icon-picture"></span> Thumbnails source: <span class="thumbsource-path"></span></div>
+          </div>
+        </div>
       </div>
+
     </div>
     <!-- Your app's content goes inside .window-content -->
     <div class="window-content">

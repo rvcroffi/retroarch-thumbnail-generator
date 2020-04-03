@@ -6,9 +6,11 @@ $(document).ready(() => {
       model.currWindow = window.appApi.currWindow;
       model.handleError = window.appApi.handleError;
       model.sendMessage = window.appApi.sendMessage;
+      model.sendQuestion = window.appApi.sendQuestion;
       model.openDirectory = window.appApi.openDirectory;
       model.readDirectory = window.appApi.readDirectory;
       model.loadPlaylist = window.appApi.loadPlaylist;
+      model.resetPlaylist = window.appApi.resetPlaylist;
       model.matchFilenames = window.appApi.matchFilenames;
       model.saveThumbs = window.appApi.saveImages;
       model.showInfoMenu = window.appApi.showInfoMenu;
@@ -61,14 +63,14 @@ $(document).ready(() => {
       view.updateRowTbl(idx);
     },
     validateListsForMatch: () => {
-      let config = controller.getStateLists();
+      let config = controller.getListsValidation();
       let msgalert = '', isValid = true;
       if (!config.playlist) {
         msgalert = 'Load your playlist file. ';
         isValid = false;
       }
       if (!config.thumblist) {
-        msgalert += 'Set your thumbnail source.';
+        msgalert += 'Set your thumbnails source.';
         isValid = false;
       }
       if (!isValid) {
@@ -91,7 +93,7 @@ $(document).ready(() => {
           "name"
         ]
       };
-      let customFuseOptions = view.getFuseOptions();
+      let customFuseOptions = view.getFuseCustomConfig();
       let fuseOptions = $.extend(true, fuseDefaultOptions, customFuseOptions);
       view.showLoading('Matching names..');
       model.matchFilenames(controller.loadedThumblist, fuseOptions)
@@ -105,7 +107,7 @@ $(document).ready(() => {
           controller.handleError(error);
         });
     },
-    getStateLists: () => {
+    getListsValidation: () => {
       let config = {
         playlist: false,
         thumblist: false
@@ -114,17 +116,20 @@ $(document).ready(() => {
       if (controller.loadedThumblist.length) config.thumblist = true;
       return config;
     },
+    setPlaylist: () => {
+      view.setQuantGames(controller.loadedPlaylist.length);
+      view.renderPlaylistTable();
+      view.scrollTblTop();
+      controller.clearLoadedThumbs();
+    },
     handleLoadPlaylist: (loadedFile) => {
       if (controller.isPlaylistValid(loadedFile.name)) {
         view.$playlistTitle = loadedFile.name.replace('.lpl', '');
         controller.loadPlaylist(loadedFile.path)
           .then((playlist) => {
             controller.loadedPlaylist = playlist;
-            view.setQuantGames(playlist.length);
-            view.renderPlaylistTable();
+            controller.setPlaylist();
             view.setPlaylistPath(loadedFile.path);
-            view.scrollTblTop();
-            //TODO clear thumbnails path
           })
           .catch((error) => {
             controller.handleError(error);
@@ -132,6 +137,10 @@ $(document).ready(() => {
       } else {
         view.showWarningMessage('Invalid playlist file');
       }
+    },
+    resetLoadedPlaylist: () => {
+      model.resetPlaylist();
+      controller.setPlaylist();
     },
     openDirectory: () => {
       return model.openDirectory();
@@ -156,6 +165,10 @@ $(document).ready(() => {
       return totalthumbs;
     },
     handleSaveButton: () => {
+      if (!controller.getListsValidation().playlist) {
+        view.showWarningMessage('Load a playlist');
+        return;
+      }
       let totalthumbs = controller.countThumbsOnPlaylist();
       if (totalthumbs) {
         controller.openDirectory()
@@ -174,7 +187,7 @@ $(document).ready(() => {
           .then((canceled) => {
             view.hideLoading();
             if (!canceled) view.showMessage('Your thumbnails have been saved!');
-            //TODO clean sources? reload playlist?
+            //TODO clear sources? reload playlist?
           })
           .catch((error) => {
             view.hideLoading();
@@ -213,17 +226,60 @@ $(document).ready(() => {
         }
       }
     },
+    clearLoadedThumbs: () => {
+      controller.loadedThumblist = [];
+      view.setThumbSourcePath('');
+    },
     saveThumbs: (dirpath, callback) => {
       return model.saveThumbs(controller.loadedPlaylist, dirpath, callback);
     },
     sendMessage: (msg, title, type) => {
       model.sendMessage(msg, title, type);
     },
+    sendQuestion: (config, okCallback) => {
+      let resp = model.sendQuestion(config.msg, config.title, config.detail);
+      if (resp === 1 && typeof okCallback === 'function') {
+        okCallback();
+      }
+    },
+    handleCloseButton: () => {
+      controller.sendQuestion({
+        msg: 'Close application?',
+        title: 'Exit'
+      }, () => {
+        controller.closeApp();
+      });
+    },
+    getThreshold: () => {
+      let value = view.$ipt_threshold.val();
+      return value / 10;
+    },
+    handleThresholdChange: () => {
+      let threshold = controller.getThreshold();
+      view.$val_threshold.text(threshold);
+    },
+    handleReloadPlaylist: () => {
+      if (!controller.getListsValidation().playlist) return;
+      controller.sendQuestion({
+        msg: 'Reset playlist?',
+        title: 'Clear Match',
+        detail: 'This action will clear all matched thumbnails'
+      }, () => {
+        controller.resetLoadedPlaylist();
+      });
+    },
+    setThreshold: (value) => {
+      view.$ipt_threshold.val(value * 10)
+        .trigger('input');
+    },
+    setDefaultConfig: () => {
+      controller.setThreshold(0.6);
+    },
     closeApp: () => {
       model.quitApp();
     }
   };
-  //TODO criar painel configurações do match
+  // TODO salvar lista de não encontrado
   let view = {
     init: () => {
       view.$playlistTitle = 'Playlist Title';
@@ -235,13 +291,17 @@ $(document).ready(() => {
       view.$thumbsource_path = $('.thumbsource-path');
       view.$btn_load_playlist = $('#btn-load-playlist');
       view.$ipt_file_playlist = $('#ipt-file-playlist');
+      view.$ipt_threshold = $('#ipt-threshold');
+      view.$val_threshold = $('#val-threshold');
       view.$btn_dir_thumbnails = $('#btn-dir-thumbnails');
       view.$btn_run = $('#btn-run');
+      view.$btn_reload = $('#btn-reload');
       view.$btn_save = $('#btn-save');
       view.$btn_quit = $('#btn-quit');
       view.$btn_info = $('#btn-info');
       view.$tbl_playlist = $('#tbl-playlist');
       view.actions();
+      controller.setDefaultConfig();
     },
     actions: () => {
       view.$btn_load_playlist.on('click', () => {
@@ -253,11 +313,17 @@ $(document).ready(() => {
           controller.handleLoadPlaylist(file);
         }
       });
+      view.$ipt_threshold.on('input', e => {
+        controller.handleThresholdChange();
+      });
       view.$btn_dir_thumbnails.on('click', () => {
         controller.handleThumbButton();
       });
       view.$btn_run.on('click', () => {
         controller.matchFilenames();
+      });
+      view.$btn_reload.on('click', () => {
+        controller.handleReloadPlaylist();
       });
       view.$btn_save.on('click', () => {
         controller.handleSaveButton();
@@ -266,14 +332,13 @@ $(document).ready(() => {
         controller.showInfoMenu();
       });
       view.$btn_quit.on('click', () => {
-        // TODO confirm popup
-        controller.closeApp();
+        controller.handleCloseButton();
       });
     },
-    getFuseOptions: () => {
+    getFuseCustomConfig: () => {
       let fuseOptions = {
-        threshold: 0.9,
-        distance: 10
+        threshold: controller.getThreshold(),
+        distance: 100
       };
       return fuseOptions;
     },
@@ -282,7 +347,7 @@ $(document).ready(() => {
       controller.loadedPlaylist.forEach((row, idx) => {
         tdclass = row.thumbnail ? '' : 'text-center';
         name = row.thumbnail ? row.thumbnail.name : '';
-        score = row.thumbnail ? row.thumbnail.score.toFixed(2) : 0;
+        score = row.thumbnail && row.thumbnail.score ? row.thumbnail.score.toFixed(2) : 0;
         thumbimg = row.thumbnail ? (`<img src="${row.thumbnail.path}" class="thumbimg"/>`) : '-';
         btngroup = `<div class="btn-group">
           <input type="file" class="ipt-edit" hidden data-idx="${idx}">

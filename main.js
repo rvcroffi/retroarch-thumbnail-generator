@@ -16,9 +16,11 @@ if (process.env.NODE_ENV == 'development') {
 global.sharedObject = {
   handleError: handleError,
   sendMessage: sendMessage,
+  sendQuestion: sendQuestion,
   openDirectory: openDirectory,
   readDirectory: readDirectory,
   loadPlaylist: loadPlaylist,
+  resetPlaylist: resetPlaylist,
   matchFilenames: matchFilenames,
   saveImages: saveImages,
   quitApp: quitApp,
@@ -119,7 +121,19 @@ function sendMessage(msg, title, type) {
     title: title || 'Attention',
     message: msg
   };
-  dialog.showMessageBox(dialogOpt);
+  dialog.showMessageBox(mainWindow, dialogOpt);
+}
+function sendQuestion(msg, title, detail) {
+  const dialogOpt = {
+    type: 'question',//"none", "info", "error", "question", "warning"
+    buttons: ['Cancel', 'Ok'],
+    defaultId: 0,
+    cancelId: 0,
+    title: title || 'Attention',
+    message: msg,
+    detail: detail
+  };
+  return dialog.showMessageBoxSync(mainWindow, dialogOpt);
 }
 
 function openDirectory() {
@@ -144,15 +158,19 @@ function loadPlaylist(path) {
         Promise.reject('Invalid playlist format');
       }
       if (data.items.length) {
-        data.items.forEach(item => {
-          item.thumbnail = null;
-        });
         loadedPlaylist = data.items;
-        return data.items.slice();
+        resetPlaylist();
+        return loadedPlaylist;
       } else {
         Promise.reject('No items in your playlist');
       }
     });
+}
+
+function resetPlaylist() {
+  loadedPlaylist.forEach(item => {
+    item.thumbnail = null;
+  });
 }
 
 function matchFilenames(filelist, options) {

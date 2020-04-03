@@ -5,8 +5,7 @@
 .top-content{
   position: relative;
   display: flex;
-  flex: 0.2;
-  overflow-y: auto;
+  flex: 0.3;
 }
 
 td, th{
