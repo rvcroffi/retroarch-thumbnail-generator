@@ -15,6 +15,7 @@ $(document).ready(() => {
       model.saveThumbs = window.appApi.saveImages;
       model.showInfoMenu = window.appApi.showInfoMenu;
       model.quitApp = window.appApi.quitApp;
+      model.savePlaylist = window.appApi.savePlaylist;
     }
   };
 
@@ -22,6 +23,9 @@ $(document).ready(() => {
     init: () => {
       controller.loadedPlaylist = [];
       controller.loadedThumblist = [];// {name: string, dirpath: string}
+      controller.thumbPath = '';
+      controller.playlistPath = '';
+      controller.playlistTitle = '';
       model.init();
       view.init();
     },
@@ -124,12 +128,12 @@ $(document).ready(() => {
     },
     handleLoadPlaylist: (loadedFile) => {
       if (controller.isPlaylistValid(loadedFile.name)) {
-        view.$playlistTitle = loadedFile.name.replace('.lpl', '');
+        controller.playlistTitle = loadedFile.name.replace('.lpl', '');
         controller.loadPlaylist(loadedFile.path)
           .then((playlist) => {
             controller.loadedPlaylist = playlist;
             controller.setPlaylist();
-            view.setPlaylistPath(loadedFile.path);
+            controller.setPlaylistPath(loadedFile.path);
           })
           .catch((error) => {
             controller.handleError(error);
@@ -139,11 +143,17 @@ $(document).ready(() => {
       }
     },
     resetLoadedPlaylist: () => {
-      model.resetPlaylist();
+      controller.loadedPlaylist = model.resetPlaylist();
       controller.setPlaylist();
     },
-    openDirectory: () => {
-      return model.openDirectory();
+    getNoThumbFilteredList: () => {
+      let filteredList = controller.loadedPlaylist.filter((item) => {
+        return !item.thumbnail;
+      });
+      return filteredList;
+    },
+    openDirectory: (path) => {
+      return model.openDirectory(path);
     },
     readDirectory: (result) => {
       if (!result.canceled) {
@@ -171,7 +181,8 @@ $(document).ready(() => {
       }
       let totalthumbs = controller.countThumbsOnPlaylist();
       if (totalthumbs) {
-        controller.openDirectory()
+        let path = controller.thumbPath || controller.playlistPath;
+        controller.openDirectory(path)
           .then(result => {
             if (!result.canceled) {
               let saved = 0;
@@ -187,7 +198,6 @@ $(document).ready(() => {
           .then((canceled) => {
             view.hideLoading();
             if (!canceled) view.showMessage('Your thumbnails have been saved!');
-            //TODO clear sources? reload playlist?
           })
           .catch((error) => {
             view.hideLoading();
@@ -198,12 +208,22 @@ $(document).ready(() => {
       }
     },
     handleThumbButton: () => {
-      controller.openDirectory()
+      let path = controller.thumbPath || controller.playlistPath;
+      controller.openDirectory(path)
         .then(controller.readDirectory)
         .then(controller.handleLoadedThumbnails)
         .catch((error) => {
           controller.handleError(error);
         });
+    },
+    setThumbSourcePath: (path) => {
+      controller.thumbPath = path;
+      view.setThumbSourcePath(path);
+    },
+    setPlaylistPath: (path) => {
+      // let dirpath = path.substring(0, path.lastIndexOf('/'));
+      controller.playlistPath = path;
+      view.setPlaylistPath(path);
     },
     handleLoadedThumbnails: (result) => {
       if (result) {
@@ -216,7 +236,7 @@ $(document).ready(() => {
                 dirpath: result.dirpath
               };
             });
-            view.setThumbSourcePath(result.dirpath);
+            controller.setThumbSourcePath(result.dirpath);
             view.scrollTblTop();
           } else {
             view.showWarningMessage('No image(PNG) files found');
@@ -228,7 +248,7 @@ $(document).ready(() => {
     },
     clearLoadedThumbs: () => {
       controller.loadedThumblist = [];
-      view.setThumbSourcePath('');
+      controller.setThumbSourcePath('');
     },
     saveThumbs: (dirpath, callback) => {
       return model.saveThumbs(controller.loadedPlaylist, dirpath, callback);
@@ -268,6 +288,23 @@ $(document).ready(() => {
         controller.resetLoadedPlaylist();
       });
     },
+    handleSaveNoThumbPlaylist: () => {
+      let list = controller.getNoThumbFilteredList();
+      if (!list || !list.length) {
+        controller.sendMessage('No data to save', 'Warning', 'warning');
+        return;
+      }
+      let title = controller.playlistTitle;
+      let path = controller.playlistPath.substring(0, controller.playlistPath.lastIndexOf('.'));
+      path += '_nothumb.lpl';
+      model.savePlaylist(list, title, path)
+        .then((ret) => {
+          console.log(ret);
+        })
+        .catch(error => {
+          controller.handleError(error);
+        });
+    },
     setThreshold: (value) => {
       view.$ipt_threshold.val(value * 10)
         .trigger('input');
@@ -279,10 +316,9 @@ $(document).ready(() => {
       model.quitApp();
     }
   };
-  // TODO salvar lista de não encontrado
+
   let view = {
     init: () => {
-      view.$playlistTitle = 'Playlist Title';
       view.$loading = $('.loading');
       view.$pane = $('.pane');
       view.$quant_games = $('.quant-games');
@@ -297,6 +333,7 @@ $(document).ready(() => {
       view.$btn_run = $('#btn-run');
       view.$btn_reload = $('#btn-reload');
       view.$btn_save = $('#btn-save');
+      view.$btn_save_nothumb_list = $('#btn-save-nothumb-list');
       view.$btn_quit = $('#btn-quit');
       view.$btn_info = $('#btn-info');
       view.$tbl_playlist = $('#tbl-playlist');
@@ -328,6 +365,9 @@ $(document).ready(() => {
       view.$btn_save.on('click', () => {
         controller.handleSaveButton();
       });
+      view.$btn_save_nothumb_list.on('click', () => {
+        controller.handleSaveNoThumbPlaylist();
+      });
       view.$btn_info.on('click', () => {
         controller.showInfoMenu();
       });
@@ -350,7 +390,7 @@ $(document).ready(() => {
         score = row.thumbnail && row.thumbnail.score ? row.thumbnail.score.toFixed(2) : 0;
         thumbimg = row.thumbnail ? (`<img src="${row.thumbnail.path}" class="thumbimg"/>`) : '-';
         btngroup = `<div class="btn-group">
-          <input type="file" class="ipt-edit" hidden data-idx="${idx}">
+          <input type="file" accept=".png" class="ipt-edit" hidden data-idx="${idx}">
           <button class="btn btn-mini btn-default btn-edit">
             <span class="icon icon-pencil"></span>
           </button>

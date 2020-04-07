@@ -16,6 +16,7 @@ window.appApi = {
   matchFilenames: sharedObject.matchFilenames,
   saveImages: sharedObject.saveImages,
   quitApp: sharedObject.quitApp,
+  savePlaylist: sharedObject.savePlaylist,
   showInfoMenu: showInfoMenu
 };
 

@@ -1,8 +1,9 @@
 const { app, BrowserWindow, Menu, dialog } = require('electron');
 const path = require('path');
-const { copyFile, readFile, readdir } = require('fs').promises;
+const { copyFile, readFile, readdir, writeFile } = require('fs').promises;
 const cp = require('child_process');
 // const { autoUpdater } = require('electron-updater');
+'use strict';
 
 if (process.env.NODE_ENV == 'development') {
   require('electron-reloader')(module);
@@ -24,7 +25,8 @@ global.sharedObject = {
   matchFilenames: matchFilenames,
   saveImages: saveImages,
   quitApp: quitApp,
-  checkUpdates: checkUpdates
+  checkUpdates: checkUpdates,
+  savePlaylist: savePlaylist
 }
 
 var mainWindow = null, loadedPlaylist = [];
@@ -113,7 +115,7 @@ function quitApp() {
   app.isQuiting = true;
   app.quit();
 }
-//TODO criar dialog Yes/No
+
 function sendMessage(msg, title, type) {
   const dialogOpt = {
     type: type || 'none',//"none", "info", "error", "question", "warning"
@@ -136,10 +138,34 @@ function sendQuestion(msg, title, detail) {
   return dialog.showMessageBoxSync(mainWindow, dialogOpt);
 }
 
-function openDirectory() {
+function openDirectory(path) {
   return dialog.showOpenDialog(mainWindow, {
-    properties: ['openDirectory']
+    properties: ['openDirectory'],
+    defaultPath: path
   });
+}
+
+function savePlaylist(playlist, title, path) {
+  let selectedPath = dialog.showSaveDialogSync(mainWindow, {
+    title: 'Save file',
+    defaultPath: path || 'nothumblist.lpl',
+    filters: [{ name: 'LPL File', extensions: ['lpl'] }]
+  });
+  if (selectedPath) {
+    let newPlaylist = {
+      name: title,
+      items: playlist
+    };
+    try {
+      let data = JSON.stringify(newPlaylist, null, 2);
+      return writeFile(selectedPath, data)
+        .then(() => true);
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  } else {
+    return Promise.resolve(false);
+  }
 }
 
 function readDirectory(path) {
@@ -171,6 +197,7 @@ function resetPlaylist() {
   loadedPlaylist.forEach(item => {
     item.thumbnail = null;
   });
+  return loadedPlaylist;
 }
 
 function matchFilenames(filelist, options) {

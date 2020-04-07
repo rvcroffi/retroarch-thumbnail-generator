@@ -30,8 +30,14 @@
           <button class="btn btn-default" id="btn-run" title="Run Match">
             <span class="icon icon-play"></span>
           </button>
+        </div>
+
+        <div class="btn-group">
           <button class="btn btn-default" id="btn-save" title="Save Thumbnails">
             <span class="icon icon-install"></span>
+          </button>
+          <button class="btn btn-default" id="btn-save-nothumb-list" title="Save Missed Thumbnails List">
+            <span class="icon icon-floppy"></span>
           </button>
           <button class="btn btn-default" id="btn-reload" title="Reset playlist">
             <span class="icon icon-arrows-ccw"></span>
@@ -52,7 +58,10 @@
       <div class="pane-group">
         <div class="pane-sm">
           <div class="padded">
-            <label>Threshold: <span id="val-threshold"></span></label>
+            <label>Threshold: <span id="val-threshold"></span>
+              <span class="icon icon-help-circled"
+                title="At what point does the match algorithm give up. A threshold of 0.0 requires a perfect match (of both letters and location), a threshold of 1.0 would match anything."></span>
+            </label>
             <input type="range" class="form-control" id="ipt-threshold" min="0" max="10">
           </div>
         </div>
