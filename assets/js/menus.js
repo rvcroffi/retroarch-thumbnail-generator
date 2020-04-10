@@ -11,8 +11,15 @@ function getMenus(sharedObject) {
     {
       label: 'About',
       click: () => {
-        shell.openExternal('https://github.com');
+        sharedObject.createAboutWindow();
+        // shell.openExternal('https://github.com');
       }
+    },
+    {
+      type: 'separator'
+    },
+    {
+      role: 'quit'
     }
   ]);
 

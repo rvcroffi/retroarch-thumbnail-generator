@@ -14,7 +14,7 @@ $(document).ready(() => {
       model.matchFilenames = window.appApi.matchFilenames;
       model.saveThumbs = window.appApi.saveImages;
       model.showInfoMenu = window.appApi.showInfoMenu;
-      model.quitApp = window.appApi.quitApp;
+      // model.quitApp = window.appApi.quitApp;
       model.savePlaylist = window.appApi.savePlaylist;
     }
   };
@@ -262,14 +262,14 @@ $(document).ready(() => {
         okCallback();
       }
     },
-    handleCloseButton: () => {
-      controller.sendQuestion({
-        msg: 'Close application?',
-        title: 'Exit'
-      }, () => {
-        controller.closeApp();
-      });
-    },
+    // handleCloseButton: () => {
+    //   controller.sendQuestion({
+    //     msg: 'Close application?',
+    //     title: 'Exit'
+    //   }, () => {
+    //     controller.closeApp();
+    //   });
+    // },
     getThreshold: () => {
       let value = view.$ipt_threshold.val();
       return value / 10;
@@ -312,9 +312,9 @@ $(document).ready(() => {
     setDefaultConfig: () => {
       controller.setThreshold(0.6);
     },
-    closeApp: () => {
-      model.quitApp();
-    }
+    // closeApp: () => {
+    //   model.quitApp();
+    // }
   };
 
   let view = {
@@ -334,8 +334,8 @@ $(document).ready(() => {
       view.$btn_reload = $('#btn-reload');
       view.$btn_save = $('#btn-save');
       view.$btn_save_nothumb_list = $('#btn-save-nothumb-list');
-      view.$btn_quit = $('#btn-quit');
-      view.$btn_info = $('#btn-info');
+      // view.$btn_quit = $('#btn-quit');
+      view.$btn_menu = $('#btn-menu');
       view.$tbl_playlist = $('#tbl-playlist');
       view.actions();
       controller.setDefaultConfig();
@@ -368,12 +368,12 @@ $(document).ready(() => {
       view.$btn_save_nothumb_list.on('click', () => {
         controller.handleSaveNoThumbPlaylist();
       });
-      view.$btn_info.on('click', () => {
+      view.$btn_menu.on('click', () => {
         controller.showInfoMenu();
       });
-      view.$btn_quit.on('click', () => {
-        controller.handleCloseButton();
-      });
+      // view.$btn_quit.on('click', () => {
+      //   controller.handleCloseButton();
+      // });
     },
     getFuseCustomConfig: () => {
       let fuseOptions = {

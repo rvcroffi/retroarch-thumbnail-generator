@@ -2,6 +2,10 @@
   max-width:50px;
 }
 
+.logo{
+  width: 100%;
+}
+
 .top-content{
   position: relative;
   display: flex;

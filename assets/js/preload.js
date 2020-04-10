@@ -15,7 +15,7 @@ window.appApi = {
   resetPlaylist: sharedObject.resetPlaylist,
   matchFilenames: sharedObject.matchFilenames,
   saveImages: sharedObject.saveImages,
-  quitApp: sharedObject.quitApp,
+  // quitApp: sharedObject.quitApp,
   savePlaylist: sharedObject.savePlaylist,
   showInfoMenu: showInfoMenu
 };

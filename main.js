@@ -24,9 +24,10 @@ global.sharedObject = {
   resetPlaylist: resetPlaylist,
   matchFilenames: matchFilenames,
   saveImages: saveImages,
-  quitApp: quitApp,
+  // quitApp: quitApp,
   checkUpdates: checkUpdates,
-  savePlaylist: savePlaylist
+  savePlaylist: savePlaylist,
+  createAboutWindow: createAboutWindow
 }
 
 var mainWindow = null, loadedPlaylist = [];
@@ -51,6 +52,9 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    backgroundColor: '#ffffff',
+    // frame: false,
+    // titleBarStyle: 'hidden',
     webPreferences: {
       preload: path.join(app.getAppPath(), 'assets', 'js', 'preload.js')
     }
@@ -60,7 +64,14 @@ function createWindow() {
 
   mainWindow.loadFile('index.html');
 
-  mainWindow.on('closed', function () {
+  mainWindow.on('close', (e) => {
+    let ans = askQuitApp();
+    if (ans !== 1) {
+      e.preventDefault();
+    }
+  });
+
+  mainWindow.on('closed', () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
@@ -72,6 +83,35 @@ function createWindow() {
   }
 
   //console.log(`This platform is ${process.platform}`);
+}
+
+function createAboutWindow() {
+
+  let aboutWindow = new BrowserWindow({
+    width: 480,
+    height: 340,
+    resizable: false,
+    movable: false,
+    minimizable: false,
+    maximizable: false,
+    alwaysOnTop: true,
+    parent: mainWindow,
+    modal: true,
+    show: false
+  });
+
+  aboutWindow.loadFile('./assets/html/about.html');
+  aboutWindow.once('ready-to-show', () => {
+    aboutWindow.show();
+  });
+
+  aboutWindow.on('closed', () => {
+    aboutWindow = null;
+  });
+}
+
+function askQuitApp() {
+  return sendQuestion('Close application?', 'Exit');
 }
 
 app.whenReady().then(createWindow);
@@ -110,11 +150,6 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
-function quitApp() {
-  app.isQuiting = true;
-  app.quit();
-}
 
 function sendMessage(msg, title, type) {
   const dialogOpt = {
