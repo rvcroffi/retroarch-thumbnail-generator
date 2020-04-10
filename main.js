@@ -50,11 +50,9 @@ function handleError(error) {
 function createWindow() {
 
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 700,
     backgroundColor: '#ffffff',
-    // frame: false,
-    // titleBarStyle: 'hidden',
     webPreferences: {
       preload: path.join(app.getAppPath(), 'assets', 'js', 'preload.js')
     }
@@ -72,9 +70,6 @@ function createWindow() {
   });
 
   mainWindow.on('closed', () => {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
     mainWindow = null;
   });
   // Open the DevTools.
@@ -150,6 +145,10 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+function setProgressBar(value, opt) {
+  mainWindow.setProgressBar(value, opt);
+}
 
 function sendMessage(msg, title, type) {
   const dialogOpt = {
@@ -241,10 +240,14 @@ function matchFilenames(filelist, options) {
       try {
         const fuseprocess = cp.fork(path.join(app.getAppPath(), 'assets', 'js', 'fuseprocess.js'));
         fuseprocess.on('message', (resp) => {
-          fuseprocess.kill();
+          setProgressBar(resp.progress);
           if (resp.err) {
+            setProgressBar(-1, { mode: 'error' });
+            fuseprocess.kill();
             reject(resp.error);
-          } else {
+          } else if (resp.progress === 2) {
+            fuseprocess.kill();
+            setProgressBar(-1);
             resolve(resp.updatedPlaylist);
           }
         });

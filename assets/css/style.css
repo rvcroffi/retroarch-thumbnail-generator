@@ -2,8 +2,12 @@
   max-width:50px;
 }
 
+.image-container{
+  text-align: center;
+}
+
 .logo{
-  width: 100%;
+  width: 80%;
 }
 
 .top-content{

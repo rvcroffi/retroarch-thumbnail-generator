@@ -4,7 +4,8 @@ const path = require('path');
 process.on('message', (obj) => {
   try {
     let fuse = new Fuse(obj.filelist, obj.options);
-    let updatedPlaylist = obj.loadedPlaylist.map((item) => {
+    let totalItems = obj.loadedPlaylist.length;
+    let updatedPlaylist = obj.loadedPlaylist.map((item, idx) => {
       let new_item = {
         label: item.label,
         path: item.path
@@ -18,9 +19,15 @@ process.on('message', (obj) => {
           score: result[0].score,
         };
       }
+      process.send({
+        progress: (idx + 1) / totalItems
+      });
       return new_item;
     });
-    process.send({ updatedPlaylist: updatedPlaylist });
+    process.send({
+      updatedPlaylist: updatedPlaylist,
+      progress: 2
+    });
   } catch (e) {
     process.send({ err: true, error: e });
   }
