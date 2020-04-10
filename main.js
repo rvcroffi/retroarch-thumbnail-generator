@@ -7,8 +7,6 @@ const cp = require('child_process');
 
 if (process.env.NODE_ENV == 'development') {
   require('electron-reloader')(module);
-  //Em DEV tem q declarar o id abaixo e clicar com o botão direito no arquivo node_modules\electron\dist\electron.exe 
-  //e "fixar em iniciar" para notificação funcionar no windows10
   app.setAppUserModelId(process.execPath);
 } else {
   app.setAppUserModelId("com.rvcroffi.retroarch-thumbnail-updater");
@@ -32,6 +30,10 @@ global.sharedObject = {
 
 var mainWindow = null, loadedPlaylist = [];
 
+/**
+ * Handles the error throwed by the application.
+ * @param {(Object|string)} error Application error
+ */
 function handleError(error) {
   let oError = {
     userMessage: '',
@@ -46,7 +48,9 @@ function handleError(error) {
   sendMessage(oError.userMessage, 'Error', 'error');
   return oError;
 }
-
+/**
+ * Creates the main window.
+ */
 function createWindow() {
 
   mainWindow = new BrowserWindow({
@@ -80,6 +84,9 @@ function createWindow() {
   //console.log(`This platform is ${process.platform}`);
 }
 
+/**
+ * Creates the About window.
+ */
 function createAboutWindow() {
 
   let aboutWindow = new BrowserWindow({
@@ -105,6 +112,9 @@ function createAboutWindow() {
   });
 }
 
+/**
+ * Sends a question dialog and returns the result.
+ */
 function askQuitApp() {
   return sendQuestion('Close application?', 'Exit');
 }
@@ -129,6 +139,10 @@ app.whenReady().then(createWindow);
 // function quitAndInstall(){
 //   autoUpdater.quitAndInstall(true, true);
 // }
+
+/**
+ * Checks for application updates.
+ */
 function checkUpdates() {
   //autoUpdater.checkForUpdates();
 }
@@ -146,19 +160,37 @@ app.on('activate', () => {
   }
 });
 
+/**
+ * Sets the progress bar value.
+ * @param {number} value Value between 0 and 1
+ * @param {Object} opt Options for progress bar
+ */
 function setProgressBar(value, opt) {
   mainWindow.setProgressBar(value, opt);
 }
 
+/**
+ * Shows a message dialog on application window.
+ * @param {string} msg Message
+ * @param {string} [title=Attention] Dialog title
+ * @param {string} [type=none] Type of dialog ("none", "info", "error", "question", "warning")
+ */
 function sendMessage(msg, title, type) {
   const dialogOpt = {
-    type: type || 'none',//"none", "info", "error", "question", "warning"
+    type: type || 'none',
     buttons: ['Ok'],
     title: title || 'Attention',
     message: msg
   };
   dialog.showMessageBox(mainWindow, dialogOpt);
 }
+/**
+ * Shows a question dialog on application window.
+ * @param {string} msg Message
+ * @param {string} [title=Attention] Dialog title
+ * @param {string} detail Detail message
+ * @returns {number} clicked button id
+ */
 function sendQuestion(msg, title, detail) {
   const dialogOpt = {
     type: 'question',//"none", "info", "error", "question", "warning"
