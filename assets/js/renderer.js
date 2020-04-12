@@ -124,7 +124,6 @@ $(document).ready(() => {
       view.setQuantGames(controller.loadedPlaylist.length);
       view.renderPlaylistTable();
       view.scrollTblTop();
-      controller.clearLoadedThumbs();
     },
     handleLoadPlaylist: (loadedFile) => {
       if (controller.isPlaylistValid(loadedFile.name)) {
@@ -145,6 +144,7 @@ $(document).ready(() => {
     resetLoadedPlaylist: () => {
       controller.loadedPlaylist = model.resetPlaylist();
       controller.setPlaylist();
+      controller.clearLoadedThumbs();
     },
     getNoThumbFilteredList: () => {
       let filteredList = controller.loadedPlaylist.filter((item) => {
