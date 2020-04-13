@@ -30,18 +30,32 @@
     "appId": "com.rvcroffi.${name}",
     "productName": "Retroarch Thumbnail Updater",
     "copyright": "Copyright © 2020 ${author}",
+    "files": [
+      "**/*",
+      "!docs/"
+    ],
     "directories": {
       "output": "dist"
     },
     "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "artifactName": "${productName}.${ext}",
+      "icon": "icon.png"
+    },
+    "linux": {
+      "target": [
+        "deb"
+      ],
       "icon": "icon.png",
-      "target": {
-        "target": "portable",
-        "arch": [
-          "x64",
-          "ia32"
-        ]
-      }
+      "category": "Utility"
     }
   }
 }

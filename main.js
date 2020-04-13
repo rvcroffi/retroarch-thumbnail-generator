@@ -115,7 +115,9 @@ function createAboutWindow() {
     aboutWindow = null;
   });
 
-  aboutWindow.webContents.openDevTools();
+  if (process.env.NODE_ENV == 'development') {
+    aboutWindow.webContents.openDevTools();
+  }
 }
 
 /**
