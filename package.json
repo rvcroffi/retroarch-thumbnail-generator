@@ -7,28 +7,11 @@
     "start": "cross-env NODE_ENV=development electron .",
     "build": "cross-env NODE_ENV=production electron-builder -p always"
   },
-  "build": {
-    "appId": "com.rvcroffi.retroarch-thumbnail-updater",
-    "productName": "Retroarch Thumbnail Updater",
-    "copyright": "Copyright © 2020 Rafael V Croffi",
-    "directories": {
-      "output": "dist"
-    },
-    "win": {
-      "icon": "icon.png",
-      "target": {
-        "target": "portable",
-        "arch": [
-          "x64",
-          "ia32"
-        ]
-      }
-    }
-  },
   "keywords": [
     "retroarch",
     "thumbnail",
-    "playlist"
+    "playlist",
+    "updater"
   ],
   "author": "Rafael V Croffi <rvcroffi@gmail.com>",
   "license": "ISC",
@@ -42,5 +25,23 @@
     "electron-updater": "^4.2.5",
     "fuse.js": "^5.1.0",
     "jquery": "^3.4.1"
+  },
+  "build": {
+    "appId": "com.rvcroffi.${name}",
+    "productName": "Retroarch Thumbnail Updater",
+    "copyright": "Copyright © 2020 ${author}",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "icon": "icon.png",
+      "target": {
+        "target": "portable",
+        "arch": [
+          "x64",
+          "ia32"
+        ]
+      }
+    }
   }
 }
