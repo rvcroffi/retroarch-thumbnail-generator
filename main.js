@@ -25,7 +25,8 @@ global.sharedObject = {
   // quitApp: quitApp,
   checkUpdates: checkUpdates,
   savePlaylist: savePlaylist,
-  createAboutWindow: createAboutWindow
+  createAboutWindow: createAboutWindow,
+  getAppVersion: getAppVersion
 }
 
 var mainWindow = null, loadedPlaylist = [];
@@ -91,7 +92,7 @@ function createAboutWindow() {
 
   let aboutWindow = new BrowserWindow({
     width: 480,
-    height: 340,
+    height: 540,
     resizable: false,
     movable: false,
     minimizable: false,
@@ -99,7 +100,10 @@ function createAboutWindow() {
     alwaysOnTop: true,
     parent: mainWindow,
     modal: true,
-    show: false
+    show: false,
+    webPreferences: {
+      preload: path.join(app.getAppPath(), 'assets', 'js', 'preload.js')
+    }
   });
 
   aboutWindow.loadFile('./assets/html/about.html');
@@ -110,6 +114,8 @@ function createAboutWindow() {
   aboutWindow.on('closed', () => {
     aboutWindow = null;
   });
+
+  aboutWindow.webContents.openDevTools();
 }
 
 /**
@@ -145,6 +151,10 @@ app.whenReady().then(createWindow);
  */
 function checkUpdates() {
   //autoUpdater.checkForUpdates();
+}
+
+function getAppVersion() {
+  return app.getVersion();
 }
 
 // Quit when all windows are closed.

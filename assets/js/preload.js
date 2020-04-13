@@ -17,6 +17,7 @@ window.appApi = {
   saveImages: sharedObject.saveImages,
   // quitApp: sharedObject.quitApp,
   savePlaylist: sharedObject.savePlaylist,
+  getAppVersion: sharedObject.getAppVersion,
   showInfoMenu: showInfoMenu
 };
 
