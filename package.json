@@ -17,14 +17,14 @@
   "license": "ISC",
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "electron": "^8.2.0",
-    "electron-builder": "^22.4.1",
+    "electron": "^8.3.0",
+    "electron-builder": "^22.7.0",
     "electron-reloader": "^1.0.1"
   },
   "dependencies": {
-    "electron-updater": "^4.2.5",
-    "fuse.js": "^5.1.0",
-    "jquery": "^3.4.1"
+    "electron-updater": "^4.3.1",
+    "fuse.js": "^5.2.3",
+    "jquery": "^3.5.1"
   },
   "build": {
     "appId": "com.rvcroffi.${name}",
