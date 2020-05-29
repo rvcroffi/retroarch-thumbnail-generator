@@ -1,7 +1,9 @@
-const { app, BrowserWindow, Menu, dialog } = require('electron');
+const { app, BrowserWindow, Menu, dialog, shell } = require('electron');
 const path = require('path');
 const { copyFile, readFile, readdir, writeFile } = require('fs').promises;
 const cp = require('child_process');
+const https = require('https');
+const variables = require('./assets/js/variables').variables;
 // const { autoUpdater } = require('electron-updater');
 'use strict';
 
@@ -149,10 +151,44 @@ app.whenReady().then(createWindow);
 // }
 
 /**
+ * Gets the latest app version from GitHub
+ */
+function getLatestAppRelease() {
+  return new Promise((resolve, reject) => {
+    https.get(variables.latest_release_url, {
+      headers: { 'Accept': 'application/vnd.github.v3+json', 'User-Agent': 'rvcroffi' }
+    }, (res) => {
+      res.setEncoding('utf8');
+      let rawData = '';
+      res.on('data', (chunk) => { rawData += chunk; });
+      res.on('end', () => {
+        try {
+          const parsedData = JSON.parse(rawData);
+          resolve(parsedData.name);
+        } catch (e) {
+          reject(e.message);
+        }
+      });
+    })
+      .on('error', (e) => {
+        reject(e);
+      });
+  });
+}
+
+/**
  * Checks for application updates.
  */
 function checkUpdates() {
-  //autoUpdater.checkForUpdates();
+  getLatestAppRelease()
+    .then((latestVersion) => {
+      let currentVersion = getAppVersion();
+      if (currentVersion < latestVersion) {
+        let idbtn = sendQuestion('Do you like to download?', 'Update Available', 'The browser will open on the download page', 'Yes');
+        if (idbtn) shell.openExternal(variables.download_page_url);
+      }
+    })
+    .catch(handleError);
 }
 
 function getAppVersion() {
@@ -201,12 +237,14 @@ function sendMessage(msg, title, type) {
  * @param {string} msg Message
  * @param {string} [title=Attention] Dialog title
  * @param {string} detail Detail message
+ * @param {string} okText Ok button text
+ * @param {string} cancelText Cancel button text
  * @returns {number} clicked button id
  */
-function sendQuestion(msg, title, detail) {
+function sendQuestion(msg, title, detail, okText, cancelText) {
   const dialogOpt = {
     type: 'question',//"none", "info", "error", "question", "warning"
-    buttons: ['Cancel', 'Ok'],
+    buttons: [(cancelText || 'Cancel'), (okText || 'Ok')],
     defaultId: 0,
     cancelId: 0,
     title: title || 'Attention',
