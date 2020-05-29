@@ -2,6 +2,7 @@
   "name": "retroarch-thumbnail-updater",
   "version": "1.0.0",
   "description": "Playlist-based thumbnail updater",
+  "homepage": "https://github.com/rvcroffi/retroarch-thumbnail-updater",
   "main": "main.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron .",
@@ -13,8 +14,16 @@
     "playlist",
     "updater"
   ],
-  "author": "Rafael V Croffi <rvcroffi@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
+  "author": {
+    "name": "Rafael V Croffi",
+    "email": "rvcroffi@gmail.com",
+    "url": "https://about.me/rvcroffi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rvcroffi/retroarch-thumbnail-updater.git"
+  },
   "devDependencies": {
     "cross-env": "^7.0.2",
     "electron": "^8.3.0",
