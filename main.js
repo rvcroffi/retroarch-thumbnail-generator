@@ -129,7 +129,7 @@ function askQuitApp() {
 
 app.whenReady().then(createWindow);
 
-// TODO Update config
+// Update config
 // autoUpdater.autoDownload = false;
 // autoUpdater.autoInstallOnAppQuit = false;
 // autoUpdater.on('update-available', () => {
@@ -216,6 +216,10 @@ function sendQuestion(msg, title, detail) {
   return dialog.showMessageBoxSync(mainWindow, dialogOpt);
 }
 
+/**
+ * Shows directory open dialog
+ * @param {string} path Default path
+ */
 function openDirectory(path) {
   return dialog.showOpenDialog(mainWindow, {
     properties: ['openDirectory'],
@@ -223,6 +227,12 @@ function openDirectory(path) {
   });
 }
 
+/**
+ * Opens save dialog and saves the playlist
+ * @param {Array} playlist Playlist
+ * @param {string} title Playlist title
+ * @param {string} [path=nothumblist.lpl] Default playlist path/name
+ */
 function savePlaylist(playlist, title, path) {
   let selectedPath = dialog.showSaveDialogSync(mainWindow, {
     title: 'Save file',
@@ -246,12 +256,20 @@ function savePlaylist(playlist, title, path) {
   }
 }
 
+/**
+ * Reads directory
+ * @param {string} path Directory path
+ */
 function readDirectory(path) {
   return readdir(path, {
     withFileTypes: false
   });
 }
 
+/**
+ * Reads the playlist file
+ * @param {string} path Directory path
+ */
 function loadPlaylist(path) {
   return readFile(path, 'utf8')
     .then((result) => {
@@ -271,6 +289,9 @@ function loadPlaylist(path) {
     });
 }
 
+/**
+ * Resets playlist
+ */
 function resetPlaylist() {
   loadedPlaylist.forEach(item => {
     item.thumbnail = null;
@@ -278,6 +299,11 @@ function resetPlaylist() {
   return loadedPlaylist;
 }
 
+/**
+ * Performs fuzzy search
+ * @param {Array} filelist Image file list
+ * @param {Object} options Fuse configuration object
+ */
 function matchFilenames(filelist, options) {
   return new Promise((resolve, reject) => {
     if (loadedPlaylist.length > 0) {
@@ -309,6 +335,12 @@ function matchFilenames(filelist, options) {
   });
 }
 
+/**
+ * Saves thumbnails to the dirpath
+ * @param {Array} playlist Playlist
+ * @param {string} dirpath Directory path
+ * @param {Function} callback Callback function
+ */
 function saveImages(playlist, dirpath, callback) {
   try {
     let promises = Promise.resolve();
