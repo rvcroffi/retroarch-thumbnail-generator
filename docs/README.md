@@ -1,0 +1,1 @@
+## Retroarch Thumbnail Updater
