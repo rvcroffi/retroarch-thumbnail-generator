@@ -27,7 +27,7 @@ baseurl: "/retroarch-thumbnail-updater" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: rvcroffi
 github_username:  rvcroffi/retroarch-thumbnail-updater
-product: retroarch-thumbnail-updater
+product: Retroarch-Thumbnail-Updater
 version: v1.0.0
 base_download_url: https://github.com/rvcroffi/retroarch-thumbnail-updater/releases/download/
 
