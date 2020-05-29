@@ -2,7 +2,7 @@
   "name": "retroarch-thumbnail-updater",
   "version": "1.0.0",
   "description": "Playlist-based thumbnail updater",
-  "homepage": "https://github.com/rvcroffi/retroarch-thumbnail-updater",
+  "homepage": "https://rvcroffi.github.io/retroarch-thumbnail-updater/",
   "main": "main.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron .",
@@ -39,6 +39,11 @@
     "appId": "com.rvcroffi.${name}",
     "productName": "Retroarch Thumbnail Updater",
     "copyright": "Copyright © 2020 ${author}",
+    "publish": {
+      "provider": "github",
+      "owner": "rvcroffi",
+      "repo": "retroarch-thumbnail-updater"
+    },
     "files": [
       "**/*",
       "!docs/"
