@@ -40,17 +40,17 @@
     "productName": "Retroarch Thumbnail Updater",
     "artifactName": "${productName}.${ext}",
     "copyright": "Copyright © 2020 ${author}",
-    "publish": {
-      "provider": "github",
-      "owner": "rvcroffi",
-      "repo": "retroarch-thumbnail-updater"
-    },
     "files": [
       "**/*",
       "!docs/"
     ],
     "directories": {
       "output": "dist"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "rvcroffi",
+      "repo": "retroarch-thumbnail-updater"
     },
     "win": {
       "target": [
@@ -65,16 +65,20 @@
       "icon": "icon.png"
     },
     "linux": {
-      "target": {
-        "target": "snap",
-        "arch": [
-          "x64",
-          "ia32"
-        ],
-        "confinement": "classic"
-      },
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
       "icon": "icon.png",
       "category": "Utility"
+    },
+    "snap": {
+      "confinement": "classic"
     }
   }
 }
