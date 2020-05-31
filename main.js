@@ -186,6 +186,8 @@ function checkUpdates() {
       if (currentVersion < latestVersion) {
         let idbtn = sendQuestion('Do you like to download?', 'Update Available', 'The browser will open on the download page', 'Yes');
         if (idbtn) shell.openExternal(variables.download_page_url);
+      } else {
+        sendMessage('You application is up to date', 'No update available');
       }
     })
     .catch(handleError);
