@@ -45,7 +45,7 @@
       "!docs/"
     ],
     "directories": {
-      "output": "dist-${os}-${arch}"
+      "output": "dist"
     },
     "win": {
       "target": [
@@ -77,15 +77,15 @@
       "icon": "544x544.png",
       "category": "Utility",
       "synopsis": "Playlist-based thumbnail updater for Retroarch",
-      "executableName": "${name}",
+      "executableName": "retroarch-thumbnail-updater",
       "desktop": {
-        "Name": "${productName}",
+        "Name": "Retroarch Thumbnail Updater",
         "Type": "Application",
         "Encoding": "UTF-8",
-        "Comment": "${description}",
-        "Icon": "${icon}",
+        "Comment": "Generate a set of thumbnails for Retroarch based on you existing playlist.",
+        "Icon": "544x544.png",
         "Terminal": "false",
-        "Categories": "${category}"
+        "Categories": "Utility"
       }
     }
   }
