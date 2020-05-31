@@ -28,7 +28,7 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: rvcroffi
 github_username:  rvcroffi/retroarch-thumbnail-updater
 prod_filename: retroarch-thumbnail-updater
-version: v1.0.0
+version: v1.0.1
 base_download_url: https://github.com/rvcroffi/retroarch-thumbnail-updater/releases/download/
 
 # Build settings
