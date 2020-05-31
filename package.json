@@ -38,7 +38,7 @@
   "build": {
     "appId": "com.rvcroffi.${name}",
     "productName": "Retroarch Thumbnail Updater",
-    "artifactName": "${name}.${ext}",
+    "artifactName": "${name}_${arch}.${ext}",
     "copyright": "Copyright © 2020 ${author}",
     "files": [
       "**/*",
