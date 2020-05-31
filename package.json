@@ -45,7 +45,7 @@
       "!docs/"
     ],
     "directories": {
-      "output": "dist"
+      "output": "dist-${os}-${arch}"
     },
     "win": {
       "target": [
