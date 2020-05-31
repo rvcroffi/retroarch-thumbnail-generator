@@ -9,4 +9,4 @@ This application assumes that you already have a valid playlist (you can create 
 Considering that a playlist can easily have more than 50 games and that the names of your image files are not identical to those of the respective games in your playlist, **the purpose of this application** is to match these images with your games by doing a fuzzy search (approximate matching) of their names. After this matching, the images will be correctly renamed and saved in the folder you choose.
 
 Fuzzy search means that the result will not always be the correct one. Therefore, you will need to review the matches found and manually replace (or remove) the erroneously associated images before saving them. Still, I believe this process is faster and easier than comparing and renaming each image manually, file by file.
-You can take a look at [how it works]({{ 'how_it_works' | relative_url }}) and [download]({% link download.markdown %}) it.
+You can take a look at [how it works]({{ 'how_it_works' | relative_url }}) and [download]({{ 'download' | relative_url }}) it.
