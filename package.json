@@ -77,13 +77,12 @@
       "icon": "544x544.png",
       "category": "Utility",
       "synopsis": "Playlist-based thumbnail updater for Retroarch",
-      "executableName": "${productName}",
+      "executableName": "${name}",
       "desktop": {
         "Name": "${productName}",
         "Type": "Application",
         "Encoding": "UTF-8",
         "Comment": "${description}",
-        "Exec": "application",
         "Icon": "${icon}",
         "Terminal": "false",
         "Categories": "${category}"
