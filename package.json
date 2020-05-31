@@ -12,7 +12,8 @@
     "retroarch",
     "thumbnail",
     "playlist",
-    "updater"
+    "updater",
+    "generator"
   ],
   "license": "MIT",
   "author": {
@@ -38,10 +39,11 @@
   "build": {
     "appId": "com.rvcroffi.${name}",
     "productName": "Retroarch Thumbnail Updater",
-    "artifactName": "${name}_${arch}.${ext}",
+    "artifactName": "${name}_${arch}_${version}.${ext}",
     "copyright": "Copyright © 2020 ${author}",
     "files": [
       "**/*",
+      "build/icon.*",
       "!docs/"
     ],
     "directories": {
@@ -62,7 +64,7 @@
         "owner": "rvcroffi",
         "repo": "retroarch-thumbnail-updater"
       },
-      "icon": "544x544.png"
+      "icon": "build/icon.png"
     },
     "linux": {
       "target": [
@@ -74,7 +76,6 @@
           ]
         }
       ],
-      "icon": "./544x544.png",
       "category": "Utility",
       "synopsis": "Playlist-based thumbnail updater for Retroarch",
       "executableName": "retroarch-thumbnail-updater",
@@ -83,7 +84,7 @@
         "Type": "Application",
         "Encoding": "UTF-8",
         "Comment": "Generate a set of thumbnails for Retroarch based on you existing playlist.",
-        "Icon": "./544x544.png",
+        "Icon": "build/icons/512x512.png",
         "Terminal": "false",
         "Categories": "Utility"
       }
