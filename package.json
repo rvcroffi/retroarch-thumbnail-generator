@@ -1,7 +1,7 @@
 {
   "name": "retroarch-thumbnail-updater",
   "version": "1.0.0",
-  "description": "Playlist-based thumbnail updater",
+  "description": "Generate a set of thumbnails for Retroarch based on you existing playlist.",
   "homepage": "https://rvcroffi.github.io/retroarch-thumbnail-updater/",
   "main": "main.js",
   "scripts": {
@@ -62,7 +62,7 @@
         "owner": "rvcroffi",
         "repo": "retroarch-thumbnail-updater"
       },
-      "icon": "icon.png"
+      "icon": "544x544.png"
     },
     "linux": {
       "target": [
@@ -74,11 +74,19 @@
           ]
         }
       ],
-      "icon": "icon.png",
-      "category": "Utility"
-    },
-    "snap": {
-      "confinement": "classic"
+      "icon": "544x544.png",
+      "category": "Utility",
+      "synopsis": "Playlist-based thumbnail updater for Retroarch",
+      "desktop": {
+        "Name": "${productName}",
+        "Type": "Application",
+        "Encoding": "UTF-8",
+        "Comment": "${description}",
+        "Exec": "application",
+        "Icon": "${icon}",
+        "Terminal": "false",
+        "Categories": "${category}"
+      }
     }
   }
 }
