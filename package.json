@@ -60,6 +60,7 @@
           ]
         }
       ],
+      "icon": "icons/icon.ico",
       "publish": {
         "provider": "github",
         "owner": "rvcroffi",
