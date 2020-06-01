@@ -63,7 +63,7 @@ function createWindow() {
     webPreferences: {
       preload: path.join(app.getAppPath(), 'assets', 'js', 'preload.js')
     },
-    icon: __dirname + '/icons/32x32.png'
+    icon: __dirname + '/build/icons/32x32.png'
   });
 
   Menu.setApplicationMenu(null);
