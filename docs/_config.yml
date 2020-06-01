@@ -29,7 +29,7 @@ google_analytics: UA-168040909-1
 # twitter_username: rvcroffi
 github_username:  rvcroffi/retroarch-thumbnail-updater
 prod_filename: retroarch-thumbnail-updater
-version: v1.0.2
+version: '1.0.2'
 base_download_url: https://github.com/rvcroffi/retroarch-thumbnail-updater/releases/download/
 
 # Build settings
