@@ -6,7 +6,8 @@
   "main": "main.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron .",
-    "build": "cross-env NODE_ENV=production electron-builder -p always"
+    "build": "cross-env NODE_ENV=production electron-builder",
+    "build-release": "cross-env NODE_ENV=production electron-builder -p always"
   },
   "keywords": [
     "retroarch",
@@ -43,11 +44,11 @@
     "copyright": "Copyright © 2020 ${author}",
     "files": [
       "**/*",
-      "build/*",
       "!docs/"
     ],
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "./"
     },
     "win": {
       "target": [
@@ -77,8 +78,7 @@
       ],
       "category": "Utility",
       "synopsis": "Playlist-based thumbnail updater for Retroarch",
-      "executableName": "retroarch-thumbnail-updater",
-      "icon": "build/icons"
+      "executableName": "retroarch-thumbnail-updater"
     }
   }
 }
