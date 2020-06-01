@@ -62,7 +62,8 @@ function createWindow() {
     backgroundColor: '#ffffff',
     webPreferences: {
       preload: path.join(app.getAppPath(), 'assets', 'js', 'preload.js')
-    }
+    },
+    icon: __dirname + '/build/icons/256x256.png'
   });
 
   Menu.setApplicationMenu(null);

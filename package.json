@@ -39,7 +39,7 @@
   "build": {
     "appId": "com.rvcroffi.${name}",
     "productName": "Retroarch Thumbnail Updater",
-    "artifactName": "${name}_${arch}_${version}.${ext}",
+    "artifactName": "${name}_${version}_${arch}.${ext}",
     "copyright": "Copyright © 2020 ${author}",
     "files": [
       "**/*",
@@ -70,13 +70,15 @@
         {
           "target": "deb",
           "arch": [
-            "x64"
+            "x64",
+            "ia32"
           ]
         }
       ],
       "category": "Utility",
       "synopsis": "Playlist-based thumbnail updater for Retroarch",
-      "executableName": "retroarch-thumbnail-updater"
+      "executableName": "retroarch-thumbnail-updater",
+      "icon": "build/icons"
     }
   }
 }
