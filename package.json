@@ -43,7 +43,7 @@
     "copyright": "Copyright © 2020 ${author}",
     "files": [
       "**/*",
-      "build/icon.*",
+      "build/*",
       "!docs/"
     ],
     "directories": {
@@ -71,12 +71,12 @@
         {
           "target": "deb",
           "arch": [
-            "x64",
-            "ia32"
+            "x64"
           ]
         }
       ],
       "category": "Utility",
+      "icon": "icons",
       "synopsis": "Playlist-based thumbnail updater for Retroarch",
       "executableName": "retroarch-thumbnail-updater",
       "desktop": {
@@ -84,10 +84,13 @@
         "Type": "Application",
         "Encoding": "UTF-8",
         "Comment": "Generate a set of thumbnails for Retroarch based on you existing playlist.",
-        "Icon": "build/icons/512x512.png",
+        "Icon": "build/icon.png",
         "Terminal": "false",
         "Categories": "Utility"
       }
+    },
+    "deb": {
+      "icon": "build/icons/512x512.png"
     }
   }
 }
