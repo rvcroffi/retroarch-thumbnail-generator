@@ -28,7 +28,7 @@ GEM
     execjs (2.7.0)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
-    ffi (1.12.2-x64-mingw32)
+    ffi (1.13.0-x64-mingw32)
     forwardable-extended (2.6.0)
     gemoji (3.0.1)
     github-pages (206)
@@ -247,6 +247,7 @@ PLATFORMS
 DEPENDENCIES
   github-pages (~> 206)
   jekyll-feed (~> 0.12)
+  jekyll-seo-tag
   minima (~> 2.5)
   tzinfo (~> 1.2)
   tzinfo-data
