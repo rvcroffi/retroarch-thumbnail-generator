@@ -1,3 +1,3 @@
-## {% site.title %}
+## Retroarch Thumbnail Generator
 
-{% site.description %}
+Generate a set of thumbnails for Retroarch based on you existing playlist.
