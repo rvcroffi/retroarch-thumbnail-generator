@@ -1,1 +1,3 @@
-## Retroarch Thumbnail Generator
+## {% site.title %}
+
+{% site.description %}
