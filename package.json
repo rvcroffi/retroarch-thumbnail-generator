@@ -1,8 +1,8 @@
 {
-  "name": "retroarch-thumbnail-updater",
+  "name": "retroarch-thumbnail-generator",
   "version": "1.0.2",
   "description": "Generate a set of thumbnails for Retroarch based on you existing playlist.",
-  "homepage": "https://rvcroffi.github.io/retroarch-thumbnail-updater/",
+  "homepage": "https://rvcroffi.github.io/retroarch-thumbnail-generator/",
   "main": "main.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron .",
@@ -13,8 +13,8 @@
     "retroarch",
     "thumbnail",
     "playlist",
-    "updater",
-    "generator"
+    "generator",
+    "updater"
   ],
   "license": "MIT",
   "author": {
@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rvcroffi/retroarch-thumbnail-updater.git"
+    "url": "https://github.com/rvcroffi/retroarch-thumbnail-generator.git"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
@@ -39,7 +39,7 @@
   },
   "build": {
     "appId": "com.rvcroffi.${name}",
-    "productName": "Retroarch Thumbnail Updater",
+    "productName": "Retroarch Thumbnail Generator",
     "artifactName": "${name}_${version}_${arch}.${ext}",
     "copyright": "Copyright © 2020 ${author}",
     "files": [
@@ -64,7 +64,7 @@
       "publish": {
         "provider": "github",
         "owner": "rvcroffi",
-        "repo": "retroarch-thumbnail-updater"
+        "repo": "retroarch-thumbnail-generator"
       }
     },
     "linux": {
@@ -79,8 +79,8 @@
       ],
       "icon": "build/icons/",
       "category": "Utility",
-      "synopsis": "Playlist-based thumbnail updater for Retroarch",
-      "executableName": "retroarch-thumbnail-updater"
+      "synopsis": "Playlist-based thumbnail generator for Retroarch",
+      "executableName": "retroarch-thumbnail-generator"
     }
   }
 }

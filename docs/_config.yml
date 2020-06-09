@@ -18,20 +18,20 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Retroarch Thumbnail Updater
+title: Retroarch Thumbnail Generator
 author: Rafael Vianna Croffi
 # email: rvcroffi@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Generate a set of thumbnails for Retroarch based on you existing playlist.
 tagline: Thumbnail generator for Retroarch
-baseurl: "/retroarch-thumbnail-updater" # the subpath of your site, e.g. /blog
+baseurl: "/retroarch-thumbnail-generator" # the subpath of your site, e.g. /blog
 url: "https://rvcroffi.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 google_analytics: UA-168040909-1
 # twitter_username: rvcroffi
-github_username:  rvcroffi/retroarch-thumbnail-updater
-prod_filename: retroarch-thumbnail-updater
+github_username:  rvcroffi/retroarch-thumbnail-generator
+prod_filename: retroarch-thumbnail-generator
 version: '1.0.2'
-base_download_url: https://github.com/rvcroffi/retroarch-thumbnail-updater/releases/download/
+base_download_url: https://github.com/rvcroffi/retroarch-thumbnail-generator/releases/download/
 
 # Build settings
 theme: minima

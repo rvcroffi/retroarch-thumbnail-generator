@@ -1,1 +1,1 @@
-## Retroarch Thumbnail Updater
+## Retroarch Thumbnail Generator

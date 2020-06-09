@@ -5,17 +5,17 @@
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 <url>
-  <loc>https://rvcroffi.github.io/retroarch-thumbnail-updater/</loc>
+  <loc>https://rvcroffi.github.io/retroarch-thumbnail-generator/</loc>
   <lastmod>2020-06-07T05:06:51+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>https://rvcroffi.github.io/retroarch-thumbnail-updater/download/</loc>
+  <loc>https://rvcroffi.github.io/retroarch-thumbnail-generator/download/</loc>
   <lastmod>2020-06-07T05:06:51+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://rvcroffi.github.io/retroarch-thumbnail-updater/how_it_works/</loc>
+  <loc>https://rvcroffi.github.io/retroarch-thumbnail-generator/how_it_works/</loc>
   <lastmod>2020-06-07T05:06:51+00:00</lastmod>
   <priority>0.80</priority>
 </url>

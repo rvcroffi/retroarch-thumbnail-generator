@@ -11,7 +11,7 @@ if (process.env.NODE_ENV == 'development') {
   require('electron-reloader')(module);
   app.setAppUserModelId(process.execPath);
 } else {
-  app.setAppUserModelId("com.rvcroffi.retroarch-thumbnail-updater");
+  app.setAppUserModelId("com.rvcroffi.retroarch-thumbnail-generator");
 }
 
 global.sharedObject = {
