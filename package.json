@@ -1,6 +1,6 @@
 {
   "name": "retroarch-thumbnail-generator",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Generate a set of thumbnails for Retroarch based on you existing playlist.",
   "homepage": "https://rvcroffi.github.io/retroarch-thumbnail-generator/",
   "main": "main.js",
@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "electron": "^8.3.0",
+    "electron": "^8.3.4",
     "electron-builder": "^22.7.0",
     "electron-reloader": "^1.0.1"
   },
