@@ -1,26 +1,25 @@
-const { remote } = require('electron');
-const menus = require('./menus');
+const { remote } = require("electron");
+const menus = require("./menus").menus;
 
-const sharedObject = remote.getGlobal('sharedObject');
+const sharedObject = remote.getGlobal("sharedObject");
 const customMenus = menus.getMenus(sharedObject);
+let packsMenu;
 
 window.appApi = {
   currWindow: remote.BrowserWindow.getFocusedWindow(),
-  handleError: sharedObject.handleError,
-  sendMessage: sharedObject.sendMessage,
-  sendQuestion: sharedObject.sendQuestion,
-  openDirectory: sharedObject.openDirectory,
-  readDirectory: sharedObject.readDirectory,
-  loadPlaylist: sharedObject.loadPlaylist,
-  resetPlaylist: sharedObject.resetPlaylist,
-  matchFilenames: sharedObject.matchFilenames,
-  saveImages: sharedObject.saveImages,
-  // quitApp: sharedObject.quitApp,
-  savePlaylist: sharedObject.savePlaylist,
-  getAppVersion: sharedObject.getAppVersion,
-  showInfoMenu: showInfoMenu
+  showInfoMenu,
+  setPackListMenu,
+  showPackListMenu,
+  ...sharedObject,
 };
 
 function showInfoMenu() {
   customMenus.infoMenu.popup();
+}
+function showPackListMenu() {
+  packsMenu.popup();
+}
+
+function setPackListMenu(list) {
+  packsMenu = menus.getListMenu(list);
 }

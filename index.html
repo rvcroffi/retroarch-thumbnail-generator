@@ -1,112 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline';"
+    />
+    <link rel="stylesheet" href="./assets/css/photon.css" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <title>Retroach Thumbnail Generator</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-  <link rel="stylesheet" href="./assets/css/photon.css">
-  <link rel="stylesheet" href="./assets/css/style.css">
-  <title>Retroach Thumbnail Generator</title>
-</head>
-
-<body>
-  <div class="window">
-
-    <!-- .toolbar-header sits at the top of your app -->
-    <header class="toolbar toolbar-header">
-      <h1 class="title"></h1>
-      <div class="toolbar-actions">
-        <button class="btn btn-default btn-dropdown" id="btn-menu">
-          <span class="icon icon-menu"></span>
-        </button>
-
-        <div class="btn-group">
-          <input type="file" id="ipt-file-playlist" accept=".lpl" hidden>
-          <button class="btn btn-default" id="btn-load-playlist" title="Load Playlist">
-            <span class="icon icon-doc-text-inv"></span>
+  <body>
+    <div class="window">
+      <!-- .toolbar-header sits at the top of your app -->
+      <header class="toolbar toolbar-header">
+        <h1 class="title"></h1>
+        <div class="toolbar-actions">
+          <button class="btn btn-default btn-dropdown" id="btn-menu">
+            <span class="icon icon-menu"></span>
           </button>
-          <button class="btn btn-default" id="btn-dir-thumbnails" title="Set Thumbnail Source">
-            <span class="icon icon-picture"></span>
+          <button
+            class="btn btn-default btn-dropdown"
+            id="btn-download"
+            title="Download"
+          >
+            <span class="icon icon-download icon-text"></span>
+            Download Packs
           </button>
-          <button class="btn btn-default" id="btn-run" title="Run Match">
-            <span class="icon icon-play"></span>
-          </button>
-        </div>
 
-        <div class="btn-group">
-          <button class="btn btn-default" id="btn-save" title="Save Thumbnails">
-            <span class="icon icon-install"></span>
-          </button>
-          <button class="btn btn-default" id="btn-save-nothumb-list" title="Save Missed Thumbnails List">
-            <span class="icon icon-floppy"></span>
-          </button>
-          <button class="btn btn-default" id="btn-reload" title="Reset playlist">
-            <span class="icon icon-arrows-ccw"></span>
-          </button>
-        </div>
+          <div class="btn-group">
+            <input type="file" id="ipt-file-playlist" accept=".lpl" hidden />
+            <button
+              class="btn btn-default"
+              id="btn-load-playlist"
+              title="Load Playlist"
+            >
+              <span class="icon icon-doc-text-inv"></span>
+            </button>
+            <button
+              class="btn btn-default"
+              id="btn-dir-thumbnails"
+              title="Set Thumbnail Source"
+            >
+              <span class="icon icon-picture"></span>
+            </button>
+            <button class="btn btn-default" id="btn-run" title="Run Match">
+              <span class="icon icon-play"></span>
+            </button>
+          </div>
 
-        <!-- <button class="btn btn-default" id="btn-quit" title="Quit App">
-          <span class="icon icon-logout"></span>
-        </button> -->
-      </div>
-    </header>
-
-    <div class="top-content">
-      <div class="pane-group">
-        <div class="pane-sm">
-          <div class="padded">
-            <label>Threshold: <span id="val-threshold"></span>
-              <span class="icon icon-help-circled"
-                title="At what point does the match algorithm give up. A threshold of 0.0 requires a perfect match (of both letters and location), a threshold of 1.0 would match anything."></span>
-            </label>
-            <input type="range" class="form-control" id="ipt-threshold" min="0" max="10">
+          <div class="btn-group">
+            <button
+              class="btn btn-default"
+              id="btn-save"
+              title="Save Thumbnails"
+            >
+              <span class="icon icon-install"></span>
+            </button>
+            <button
+              class="btn btn-default"
+              id="btn-save-nothumb-list"
+              title="Save Missed Thumbnails List"
+            >
+              <span class="icon icon-floppy"></span>
+            </button>
+            <button
+              class="btn btn-default"
+              id="btn-reload"
+              title="Reset playlist"
+            >
+              <span class="icon icon-arrows-ccw"></span>
+            </button>
           </div>
         </div>
-        <div class="pane">
-          <div class="padded">
-            <div><span class="icon icon-doc-text-inv"></span> Playlist source: <span class="playlist-path"></span></div>
-            <div><span class="icon icon-picture"></span> Thumbnails source: <span class="thumbsource-path"></span></div>
+      </header>
+
+      <div class="top-content">
+        <div class="pane-group">
+          <div class="pane-sm">
+            <div class="padded">
+              <label
+                >Threshold: <span id="val-threshold"></span>
+                <span
+                  class="icon icon-help-circled"
+                  title="At what point does the match algorithm give up. A threshold of 0.0 requires a perfect match (of both letters and location), a threshold of 1.0 would match anything."
+                ></span>
+              </label>
+              <input
+                type="range"
+                class="form-control"
+                id="ipt-threshold"
+                min="0"
+                max="10"
+              />
+            </div>
+          </div>
+          <div class="pane">
+            <div class="padded">
+              <div>
+                <span class="icon icon-doc-text-inv"></span> Playlist source:
+                <span class="playlist-path"></span>
+              </div>
+              <div>
+                <span class="icon icon-picture"></span> Thumbnails source:
+                <span class="thumbsource-path"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Your app's content goes inside .window-content -->
+      <div class="window-content">
+        <div class="pane-group">
+          <div class="pane">
+            <table class="" id="tbl-playlist">
+              <!--table-striped-->
+              <thead>
+                <tr class="text-center">
+                  <th>Games <span class="quant-games"></span></th>
+                  <th>Image Name</th>
+                  <th>Preview</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
           </div>
         </div>
       </div>
 
-    </div>
-    <!-- Your app's content goes inside .window-content -->
-    <div class="window-content">
-      <div class="pane-group">
-        <div class="pane">
-          <table class="" id="tbl-playlist">
-            <!--table-striped-->
-            <thead>
-              <tr class="text-center">
-                <th>Games <span class="quant-games"></span></th>
-                <th>Image Name</th>
-                <th>Preview</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <footer class="toolbar toolbar-footer">
+        <h1 class="title">
+          <img
+            src="./assets/images/loading.png"
+            class="loading"
+            style="display: none"
+          />
+          <span class="footer-text"></span>
+        </h1>
+      </footer>
     </div>
 
-    <footer class="toolbar toolbar-footer">
-      <h1 class="title">
-        <img src="./assets/images/loading.png" class="loading" style="display: none;">
-        <span class="footer-text"></span>
-      </h1>
-    </footer>
-  </div>
-
-  <!--scripts-->
-  <script src="./node_modules/jquery/dist/jquery.slim.min.js"></script>
-  <script src="./assets/js/renderer.js"></script>
-</body>
-
+    <!--scripts-->
+    <script src="./node_modules/jquery/dist/jquery.slim.min.js"></script>
+    <script src="./assets/js/renderer.js"></script>
+  </body>
 </html>

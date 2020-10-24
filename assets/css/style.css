@@ -1,31 +1,36 @@
 .thumbimg {
-  max-width:50px;
+  max-width: 50px;
 }
 
-.image-container{
+.image-container {
   text-align: center;
 }
 
-.logo{
+.logo {
   width: 80%;
 }
 
-.top-content{
+.top-content {
   position: relative;
   display: flex;
-  flex: 0.3;
+  min-height: 90px;
 }
 
-td, th{
+td,
+th {
   max-width: 250px;
 }
 
-.loading{
+.loading {
   width: 15px;
   vertical-align: middle;
 }
 
-.footer-text{
+.footer-text {
   vertical-align: text-top;
   font-weight: bold;
+}
+
+#tbl-playlist td {
+  border-bottom: 1px solid lightgray;
 }

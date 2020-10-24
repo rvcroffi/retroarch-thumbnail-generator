@@ -1,38 +1,50 @@
-const { Menu, shell } = require('electron').remote;
-const variables = require('./variables').variables;
+const { Menu, shell } = require("electron").remote;
+const variables = require("./variables").variables;
 
 function getMenus(sharedObject) {
-  let infoMenu = Menu.buildFromTemplate([
+  const infoMenu = Menu.buildFromTemplate([
     {
-      label: 'How it works',
+      label: "How it works",
+      role: "help",
       click: () => {
         shell.openExternal(variables.howitworks_url);
-      }
+      },
     },
     {
-      label: 'Check updates',
+      label: "Check updates",
       click: () => {
         sharedObject.checkUpdates();
-      }
+      },
     },
     {
-      label: 'About',
+      label: "About",
       click: () => {
         sharedObject.createAboutWindow();
-      }
+      },
     },
     {
-      type: 'separator'
+      type: "separator",
     },
     {
-      role: 'quit'
-    }
+      role: "quit",
+    },
   ]);
 
   return {
-    infoMenu
+    infoMenu,
   };
 }
 
+function getListMenu(list) {
+  const menuItens = list.map((m) => {
+    return {
+      label: m.text,
+      click: () => {
+        shell.openExternal(variables.thumbnails_packs + m.link);
+      },
+    };
+  });
+  return Menu.buildFromTemplate(menuItens);
+}
 
-exports.getMenus = getMenus;
+exports.menus = { getMenus, getListMenu };
