@@ -8,7 +8,7 @@
 # For technical reasons, this file is *NOT* reloaded automatically when you use
 # 'bundle exec jekyll serve'. If you change this file, please restart the server process.
 #
-# If you need help with YAML syntax, here are some quick references for you: 
+# If you need help with YAML syntax, here are some quick references for you:
 # https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
 # https://learnxinyminutes.com/docs/yaml/
 #
@@ -28,9 +28,9 @@ baseurl: "/retroarch-thumbnail-generator" # the subpath of your site, e.g. /blog
 url: "https://rvcroffi.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 google_analytics: UA-168040909-1
 # twitter_username: rvcroffi
-github_username:  rvcroffi/retroarch-thumbnail-generator
+github_username: rvcroffi/retroarch-thumbnail-generator
 prod_filename: retroarch-thumbnail-generator
-version: '1.0.4'
+version: "1.1.0"
 base_download_url: https://github.com/rvcroffi/retroarch-thumbnail-generator/releases/download/
 
 # Build settings
@@ -38,7 +38,6 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
-
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to

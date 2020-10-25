@@ -8,7 +8,7 @@ After opening the application, click on the icon to load the playlist (marked in
 
 ![Load playlist]({{'/assets/images/Screenshot_1.png' | relative_url}})
 
-Select your playlist (.lpl file in JSON format), then click on the icon to load your thumbnail folder.
+Select your playlist (.lpl file in JSON format), then click on the icon to load your thumbnail folder**<sup>[\*](#thumb-pack)</sup>**.
 
 ![Load thumbnail folder]({{'/assets/images/Screenshot_2.png' | relative_url}})
 
@@ -37,3 +37,7 @@ Note: If some games have run out of images, you can save a temporary playlist wi
 ![Run match]({{'/assets/images/Screenshot_8.png' | relative_url}})
 
 Later, load that playlist and repeat the previous steps. Then you can delete this temporary playlist.
+
+<p id="thumb-pack">* You can download a thumbnail pack (zipped) by clicking on the drop down menu or directly from <a href="https://thumbnails.libretro.com/">Libretro</a>.</p>
+
+![Thumbnail packs download]({{'/assets/images/Screenshot_9.png' | relative_url}})
