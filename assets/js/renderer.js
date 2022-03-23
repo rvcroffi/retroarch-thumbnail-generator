@@ -26,6 +26,9 @@ $(() => {
     showPackListMenu: () => {
       model.showPackListMenu();
     },
+    getThumbnailsPack: () => {
+      model.getThumbnailsPack("");
+    },
     loadPlaylist: (path) => {
       return model.loadPlaylist(path);
     },
@@ -396,7 +399,7 @@ $(() => {
         controller.showInfoMenu();
       });
       view.$btn_download.on("click", async () => {
-        controller.showPackListMenu();
+        controller.getThumbnailsPack();
       });
     },
     getFuseCustomConfig: () => {

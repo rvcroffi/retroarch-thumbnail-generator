@@ -1,4 +1,4 @@
-const { Menu, shell } = require("electron").remote;
+const { Menu, shell } = require("electron");
 const variables = require("./variables").variables;
 
 function getMenus(sharedObject) {

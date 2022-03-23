@@ -1,25 +1,31 @@
-const { remote } = require("electron");
-const menus = require("./menus").menus;
+const { contextBridge } = require("electron");
+const remote = require("@electron/remote");
+// const menus = require("./menus").menus;
 
-const sharedObject = remote.getGlobal("sharedObject");
-const customMenus = menus.getMenus(sharedObject);
-let packsMenu;
+try {
+  const sharedObject = remote.getGlobal("sharedObject");
+  const menus = remote.getGlobal("menus");
+  const customMenus = menus.getMenus(sharedObject);
+  let packsMenu;
 
-window.appApi = {
-  currWindow: remote.BrowserWindow.getFocusedWindow(),
-  showInfoMenu,
-  setPackListMenu,
-  showPackListMenu,
-  ...sharedObject,
-};
+  contextBridge.exposeInMainWorld("appApi", {
+    currWindow: remote.BrowserWindow.getFocusedWindow(),
+    showInfoMenu,
+    setPackListMenu,
+    showPackListMenu,
+    ...sharedObject,
+  });
 
-function showInfoMenu() {
-  customMenus.infoMenu.popup();
-}
-function showPackListMenu() {
-  packsMenu.popup();
-}
+  function showInfoMenu() {
+    customMenus.infoMenu.popup();
+  }
+  function showPackListMenu() {
+    packsMenu.popup();
+  }
 
-function setPackListMenu(list) {
-  packsMenu = menus.getListMenu(list);
+  function setPackListMenu(list) {
+    packsMenu = menus.getListMenu(list);
+  }
+} catch (error) {
+  console.log(error);
 }

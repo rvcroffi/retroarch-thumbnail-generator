@@ -1,9 +1,4 @@
-const { app, BrowserWindow, Menu, dialog, shell } = require("electron");
-const path = require("path");
-const { copyFile, readFile, readdir, writeFile } = require("fs").promises;
-const cp = require("child_process");
-const https = require("https");
-const variables = require("./assets/js/variables").variables;
+const { app, Menu } = require("electron");
 // const { autoUpdater } = require('electron-updater');
 ("use strict");
 
@@ -33,6 +28,8 @@ global.sharedObject = {
   getThumbnailsPack,
 };
 
+global.menus = require("./assets/js/menus").menus;
+
 var mainWindow = null,
   loadedPlaylist = [];
 
@@ -58,6 +55,8 @@ function handleError(error) {
  * Creates the main window.
  */
 function createWindow() {
+  const path = require("path");
+  const { BrowserWindow } = require("electron");
   mainWindow = new BrowserWindow({
     width: 1024,
     height: 700,
@@ -67,6 +66,9 @@ function createWindow() {
     },
     icon: __dirname + "/build/icon.png",
   });
+
+  require("@electron/remote/main").initialize();
+  require("@electron/remote/main").enable(mainWindow.webContents);
 
   Menu.setApplicationMenu(null);
 
@@ -94,6 +96,8 @@ function createWindow() {
  * Creates the About window.
  */
 function createAboutWindow() {
+  const path = require("path");
+  const { BrowserWindow } = require("electron");
   let aboutWindow = new BrowserWindow({
     width: 480,
     height: 540,
@@ -109,6 +113,8 @@ function createAboutWindow() {
       preload: path.join(app.getAppPath(), "assets", "js", "preload.js"),
     },
   });
+
+  require("@electron/remote/main").enable(aboutWindow.webContents);
 
   aboutWindow.loadFile("./assets/html/about.html");
   aboutWindow.once("ready-to-show", () => {
@@ -156,6 +162,8 @@ app.whenReady().then(createWindow);
  * Gets the latest app version from GitHub
  */
 function getLatestAppRelease() {
+  const https = require("https");
+  const variables = require("./assets/js/variables").variables;
   return new Promise((resolve, reject) => {
     https
       .get(
@@ -197,6 +205,8 @@ function checkUpdates() {
     .then((latestVersion) => {
       let currentVersion = getAppVersion();
       if (currentVersion < latestVersion) {
+        const { shell } = require("electron");
+        const variables = require("./assets/js/variables").variables;
         let idbtn = sendQuestion(
           "Do you like to download?",
           "Update Available",
@@ -223,6 +233,7 @@ app.on("window-all-closed", () => {
 });
 
 app.on("activate", () => {
+  const { BrowserWindow } = require("electron");
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
@@ -244,6 +255,7 @@ function setProgressBar(value, opt) {
  * @param {string} [type=none] Type of dialog ("none", "info", "error", "question", "warning")
  */
 function sendMessage(msg, title, type) {
+  const { dialog } = require("electron");
   const dialogOpt = {
     type: type || "none",
     buttons: ["Ok"],
@@ -262,6 +274,7 @@ function sendMessage(msg, title, type) {
  * @returns {number} clicked button id
  */
 function sendQuestion(msg, title, detail, okText, cancelText) {
+  const { dialog } = require("electron");
   const dialogOpt = {
     type: "question", //"none", "info", "error", "question", "warning"
     buttons: [cancelText || "Cancel", okText || "Ok"],
@@ -279,6 +292,7 @@ function sendQuestion(msg, title, detail, okText, cancelText) {
  * @param {string} path Default path
  */
 function openDirectory(path) {
+  const { dialog } = require("electron");
   return dialog.showOpenDialog(mainWindow, {
     properties: ["openDirectory"],
     defaultPath: path,
@@ -292,6 +306,7 @@ function openDirectory(path) {
  * @param {string} [path=nothumblist.lpl] Default playlist path/name
  */
 async function savePlaylist(playlist, title, path) {
+  const { dialog } = require("electron");
   let selectedPath = dialog.showSaveDialogSync(mainWindow, {
     title: "Save file",
     defaultPath: path || "nothumblist.lpl",
@@ -303,6 +318,7 @@ async function savePlaylist(playlist, title, path) {
       items: playlist,
     };
     try {
+      const { writeFile } = require("fs").promises;
       let data = JSON.stringify(newPlaylist, null, 2);
       await writeFile(selectedPath, data);
       return true;
@@ -319,6 +335,7 @@ async function savePlaylist(playlist, title, path) {
  * @param {string} path Directory path
  */
 function readDirectory(path) {
+  const { readdir } = require("fs").promises;
   return readdir(path, {
     withFileTypes: false,
   });
@@ -329,6 +346,7 @@ function readDirectory(path) {
  * @param {string} path Directory path
  */
 async function loadPlaylist(path) {
+  const { readFile } = require("fs").promises;
   const result = await readFile(path, "utf8");
   let data;
   try {
@@ -361,6 +379,9 @@ function resetPlaylist() {
  * @param {Object} options Fuse configuration object
  */
 function matchFilenames(filelist, options) {
+  const path = require("path");
+  const cp = require("child_process");
+  const { shell } = require("electron");
   return new Promise((resolve, reject) => {
     if (loadedPlaylist.length > 0) {
       try {
@@ -402,6 +423,8 @@ function matchFilenames(filelist, options) {
  */
 function saveImages(playlist, dirpath, callback) {
   try {
+    const path = require("path");
+    const { copyFile } = require("fs").promises;
     let promises = Promise.resolve();
     playlist.forEach((element) => {
       if (element.thumbnail) {
@@ -428,6 +451,8 @@ function saveImages(playlist, dirpath, callback) {
  * Gets thumbnails packs list
  */
 function getThumbnailsPacksList() {
+  const https = require("https");
+  const variables = require("./assets/js/variables").variables;
   return new Promise((resolve, reject) => {
     https
       .get(variables.thumbnails_packs, (res) => {
@@ -452,5 +477,7 @@ function getThumbnailsPacksList() {
  * @param {string} path Thumbnail path
  */
 function getThumbnailsPack(path) {
+  const { shell } = require("electron");
+  const variables = require("./assets/js/variables").variables;
   shell.openExternal(variables.thumbnails_packs + path);
 }

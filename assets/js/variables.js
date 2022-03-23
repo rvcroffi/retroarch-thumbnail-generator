@@ -5,5 +5,5 @@ exports.variables = {
     "https://rvcroffi.github.io/retroarch-thumbnail-generator/download/",
   howitworks_url:
     "https://rvcroffi.github.io/retroarch-thumbnail-generator/how_it_works/",
-  thumbnails_packs: "https://thumbnails.libretro.com/packs/",
+  thumbnails_packs: "https://thumbnails.libretro.com/",
 };
