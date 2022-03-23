@@ -30,7 +30,7 @@ google_analytics: UA-168040909-1
 # twitter_username: rvcroffi
 github_username: rvcroffi/retroarch-thumbnail-generator
 prod_filename: retroarch-thumbnail-generator
-version: "1.1.0"
+version: "1.1.1"
 base_download_url: https://github.com/rvcroffi/retroarch-thumbnail-generator/releases/download/
 
 # Build settings
