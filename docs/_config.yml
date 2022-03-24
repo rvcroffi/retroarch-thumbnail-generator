@@ -26,7 +26,7 @@ tagline: Thumbnail generator for Retroarch
 logo: /assets/images/twitter_header_photo_1.png
 baseurl: "/retroarch-thumbnail-generator" # the subpath of your site, e.g. /blog
 url: "https://rvcroffi.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-google_analytics: UA-168040909-1
+google_analytics: G-JNX66G0V25
 # twitter_username: rvcroffi
 github_username: rvcroffi/retroarch-thumbnail-generator
 prod_filename: retroarch-thumbnail-generator
