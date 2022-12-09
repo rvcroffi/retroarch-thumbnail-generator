@@ -28,8 +28,8 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "electron": "^18.3.7",
-    "electron-builder": "^22.10.5",
+    "electron": "^22.0.0",
+    "electron-builder": "^23.6.0",
     "electron-reloader": "^1.2.3"
   },
   "dependencies": {
