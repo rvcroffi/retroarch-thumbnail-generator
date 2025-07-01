@@ -135,9 +135,11 @@
   version "0.7.34"
   resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.34.tgz#10964ba0dee6ac4cd462e2795b6bebd407303433"
 
-"@types/node@*", "@types/node@^16.11.26":
-  version "16.18.3"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.18.3.tgz#d7f7ba828ad9e540270f01ce00d391c54e6e0abc"
+"@types/node@*", "@types/node@^22.7.7":
+  version "22.15.34"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.15.34.tgz#3995a6461d2cfc51c81907da0065fc328f6a459e"
+  dependencies:
+    undici-types "~6.21.0"
 
 "@types/plist@^3.0.1":
   version "3.0.2"
@@ -628,12 +630,12 @@ electron-updater@^6.3.0:
     semver "^7.3.8"
     tiny-typed-emitter "^2.1.0"
 
-electron@^22.3.25:
-  version "22.3.25"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-22.3.25.tgz#a9a70b63a6712c658cd7fab343129b2a78450f80"
+electron@^37.1.0:
+  version "37.1.0"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-37.1.0.tgz#6d6d1891f8add5d2d44007e2ee5d4542140fc4b4"
   dependencies:
     "@electron/get" "^2.0.0"
-    "@types/node" "^16.11.26"
+    "@types/node" "^22.7.7"
     extract-zip "^2.0.1"
 
 emoji-regex@^8.0.0:
@@ -1421,6 +1423,10 @@ type-fest@^0.13.1:
 typescript@^4.0.2:
   version "4.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
+
+undici-types@~6.21.0:
+  version "6.21.0"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.21.0.tgz#691d00af3909be93a7faa13be61b3a5b50ef12cb"
 
 universalify@^0.1.0:
   version "0.1.2"
