@@ -664,9 +664,9 @@ electron-updater@^6.8.9:
     semver "~7.7.3"
     tiny-typed-emitter "^2.1.0"
 
-electron@^41.10.7:
-  version "41.10.7"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-41.10.7.tgz#21864ab665d9aad4abd99afa2c90e0dd4d6a13be"
+electron@^45.1.0:
+  version "45.1.0"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-45.1.0.tgz#0958d57fdc504123396bfb6ca1563b31e35b67d4"
   dependencies:
     "@electron-internal/extract-zip" "^1.0.1"
     "@electron/get" "^5.0.0"
@@ -958,8 +958,8 @@ hosted-git-info@^4.1.0:
     lru-cache "^6.0.0"
 
 http-cache-semantics@^4.0.0:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.1.1.tgz#abe02fcb2985460bf0323be664436ec3476a6d5a"
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.3.0.tgz#09eead3b16c6d85552857cc3fbd888d8353a2aaf"
 
 http-proxy-agent@^7.0.0:
   version "7.0.2"
